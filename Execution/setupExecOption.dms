@@ -1,0 +1,55 @@
+SET LOG \\psbldfs.us.oracle.com\dfs\enterprise\QEShare\QEO-Partner\DataMover_Scripts\setupExecOption.log;
+
+--ACTIVE THE PTTST_CONFIG_NO_SSL--
+UPDATE PSOPRVERDFN SET ACTIVE_FLAG = 'A' where IB_OPERATIONNAME = 'PTTST_CONFIG_NO_SSL';
+COMMIT;
+
+--Add Execution Option--
+delete from PSPTTSTOPTIONS where PTTST_EXOP_NAME = 'E92AUQA3';
+COMMIT;
+
+Insert into PSPTTSTOPTIONS values (
+            'E92AUQA3',
+            'N',
+            'http://slc08afp.us.oracle.com:8000/e92auqa3x/signon.html',
+            'CH',
+            'VP1',
+            '1ENC1EED306F6AFC3A3E96F980DB62B88A9ACECDC0EF',
+            'PSUNX',
+            'QA',
+            'Y',
+            'N',
+            'N',
+            'N',
+            'N',
+            'MM/DD/YYYY',
+            0,
+            '\\psbldfs\dfs\build\pt\ptship\pt85604d\install_Windows.ora',
+            'E92AUQA3',
+            'VP1',
+            '1ENC1EED306F6AFC3A3E96F980DB62B88A9ACECDC0EF',
+            ' ',
+            'ORACLE',
+            '\\psbldfs.us.oracle.com\dfs\enterprise\QEShare\QEO-Partner\DataMover_Scripts',
+            '\\psbldfs.us.oracle.com\dfs\enterprise\QEShare\QEO-Partner\DataMover_Scripts',
+            '\\psbldfs.us.oracle.com\dfs\enterprise\QEShare\QEO-Partner\DataMover_Scripts',
+            'N',
+            ' ',
+            ' ',
+            'N',
+            'N',
+            'N'
+);
+COMMIT;
+
+
+delete from PSPTTSTOPT_URL where PTTST_EXOP_NAME = 'E92AUQA3';
+COMMIT;
+
+Insert into PSPTTSTOPT_URL values (
+            'E92AUQA3',
+            'PORTAL',
+            'http://slc08afp.us.oracle.com:8000/psc/e92auqa3x/EMPLOYEE/ERP/'
+);
+COMMIT;
+
