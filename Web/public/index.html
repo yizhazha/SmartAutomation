@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="stylesheets/style.css" type="text/css"/>
+    <script src="js/lib/jquery-1.8.0.min.js"></script>
+</head>
+
+<body>
+<div id="app">
+    <div id="loginView">
+        <div id="loginTitle">
+            Automation Execution
+        </div>
+        <table>
+            <form action="/process" method="GET">
+                <tr>
+                    <td>
+                        <input type="text" name="UOW" placeholder="Please Enter UOW" autofocus autocomplete="on">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input type="text" name="Database" placeholder="Please Enter Database">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input type="text" name="Email" placeholder="Please Enter Your Email">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input type="submit" value="Run" style="width:90px;height:40px;font-size:20px">
+                    </td>
+                </tr>
+
+            </form>
+        </table>
+    </div>
+<canvas id="canvas">
+</div>
+<script type="text/javascript" src="javascripts/particles.js"></script>
+</body>
+
+</html>
