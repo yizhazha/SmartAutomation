@@ -1,6 +1,6 @@
-import smtplib
 import ConfigParser
 import datetime
+import smtplib
 from email.mime.text import MIMEText
 
 ##--Beginning of Loading result.html##
@@ -18,19 +18,27 @@ fp.close()
 
 ##--Ending of Loading result.html##
 
-# sendemail
-file_dir="C:/Users/chuyu"
+# Get the email address from Web UI
+# file_dir="C:\Python27\EX"
 cfe=ConfigParser.ConfigParser()
-file_ename=file_dir+"/test.txt"
-cfe.read(file_ename)
-uownum=cfe.get("UOW","UOW")
-msg['Subject'] = 'UOW'+uownum+' '+'Impacted Automation Test Result'
-msg['From'] =cf.get("mail_server","From")
+# file_ename=file_dir+"/test.txt"
+cfe.read("WebPar.txt")
+
 mails= cfe.get("send_email","email")
 emails=[]
 emails.append(mails.split(','))
 emails=tuple(emails)
 
+#Get the UOW and Product info from JSON file
+
+#Get the default product owner
+cfdp=ConfigParser.ConfigParser()
+cfdp.read("productowner.txt")
+# uownum=cfdp.get("UOW","UOW")
+# msg['Subject'] = 'UOW'+uownum+' '+'Impacted Automation Test Result'
+
+#sendemail
+msg['From'] =cf.get("mail_server","From")
 msg['To'] = ','.join(emails[0])
 user = cf.get("mail_server", "ADRR")
 password = cf.get("mail_server", "PWD")
