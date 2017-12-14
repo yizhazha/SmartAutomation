@@ -1,0 +1,3 @@
+[send_email]
+email = ally.yu@oracle.com, dinga.du@oracle.com
+
