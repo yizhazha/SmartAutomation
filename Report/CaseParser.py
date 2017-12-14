@@ -332,25 +332,32 @@ def generateHTMLReport(testResult):
     for testsuite in testResult.testsuite_list:
         testcaseList = testsuite.testcaseList
 
+        length = str(len(testcaseList) + 1)
+        run_time = str(testResult.testsuite_list.index(testsuite) + 1)
+
+        report_html.write("<tr class=desc ><td rowspan=" + length + ">" \
+                          + run_time + "</td>"
+                          + "<td rowspan=" + length + ">" \
+                          + testsuite.param.testname + "</td></tr>\n")
+
         for item in testcaseList:
             exec_id = item.id
             testcase_name = item.name
             num_of_step = len(item.stepList)
             status = item.status
-            # testsuite_name = param.testname
 
             if status == "Passed":
                 report_html.write("<tr align=center bgcolor=#FFFFFF class=desc><td>" \
-                                  + str(testResult.testsuite_list.index(testsuite) + 1) + "</td>" + "<td>" \
-                                  + testsuite.param.testname + "</td><td>" \
+                                  #+ str(testResult.testsuite_list.index(testsuite) + 1) + "</td>" + "<td>" \
+                                  #+ testsuite.param.testname + "</td><td>" \
                                   # + str(exec_id) + "</B></td><td>" \
                                   + testcase_name + "</td><td style=\"color:green;\">" \
                                   + status + "</td><td>" + "None" + "</td><td>" + "None" + "</td></tr>\n")
             else:
                 failed_info = item.failedMsg.toString()
                 report_html.write("<tr align=center bgcolor=#FFFFFF class=desc><td>" \
-                                  + str(testResult.testsuite_list.index(testsuite) + 1) + "</td>" + "<td>" \
-                                  + testsuite.param.testname + "</td><td>" \
+                                  #+ str(testResult.testsuite_list.index(testsuite) + 1) + "</td>" + "<td>" \
+                                  #+ testsuite.param.testname + "</td><td>" \
                                   # + str(exec_id) + "</B></td><td>" \
                                   + testcase_name + "</td><td style=\"color:red;\">" \
                                   + status + "</td><td>" \
