@@ -266,51 +266,54 @@ def generateHTMLReport(testResult):
     report_html.write("<html><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n")
     report_html.write("<style type=\"text/css\">\n")
     report_html.write("<!--\n")
-    report_html.write("body{margin:0; font-family:Tahoma;Simsun;font-size:12px;}\n")
+    #report_html.write("body{margin:0; font-family:Tahoma;Simsun;font-size:12px;}\n") Comment by Xiuyi
     report_html.write("table{border:1px #E1E1E1 solid;}\n")
     report_html.write("td{border:1px #E1E1E1 solid;}\n")
-    report_html.write(".title {font-size: 12px; COLOR: #FFFFFF; font-family: Tahoma;}\n")
-    report_html.write(".desc {font-size: 12px; COLOR: #000000; font-family: Tahoma;}\n")
+    # report_html.write(".title {font-size: 12px; COLOR: #FFFFFF; font-family: Tahoma;}\n") Comment by Xiuyi
+    # report_html.write(".desc {font-size: 12px; COLOR: #000000; font-family: Tahoma;}\n") Comment by Xiuyi
+    # Modify HTML format by Xiuyi
+    report_html.write(".title {font-size: 13px; COLOR: #000000; font-family: Segoe UI;background-color:rgb(201, 216, 242);text-align:center;}\n")
+    report_html.write(".desc {font-size: 13px; COLOR: #000000; font-family: Segoe UI;text-align:center;}\n")
+    report_html.write("font {font-weight:normal;font-family:Segoe UI;font-size: 20px;color:#0000FF;}\n")
+    #report_html.write("p{font-size: 24px; color:#0000FF; font-family: Segoe UI; text-align:center ;font-weight: bold; padding-bottom:0px;margin-bottom:0px;}\n")
     report_html.write("-->\n")
     report_html.write("</style>\n")
     report_html.write("<br>")
 
     '''check runtime env'''
     param = testResult.testsuite_list[0].param
-    report_html.write("<head><center><font face=\"黑体\" size=5 color=0xF0F0F>ENV</center></head>\n")
+    #report_html.write("<head><center><font face=\"Segoe UI\" size=5 color=0xF0F0F>ENV</center></head>\n")
+    report_html.write("<head><center style=\"margin-top:10px;\"><font>ENV</font></center></head>\n")
+    #report_html.write("<p> ENV </p>\n")
     report_html.write("<body><table cellpadding=\"0\" cellspacing=\"0\" align=\"center\"\n>")
-    # report_html.write("<tr bgcolor=#858585 align=center class=title><td width=\"250\">Server</td><td width=\"100\">User</td><td width=\"150\">ExecOpt</td></tr>\n")
-    report_html.write(
-        "<tr bgcolor=#858585 align=center class=title><td width=\"250\">DataBase</td><td width=\"150\">ExecOpt</td><td width=\"100\">Run Times</td></tr>\n")
-    report_html.write(
-        "<tr align=center bgcolor=#FFFFFF class=desc><td><B>" + param.server + "</B></td><td>" + param.execopt + "</td><td>" + str(
-            len(testResult.testsuite_list)) + "</td></tr>\n")
-    # report_html.write("<tr align=center bgcolor=#FFFFFF class=desc><td><B>"+param.server+"</B></td><td>"+param.user+"</td><td>" + param.execopt+ "</td></tr>\n")
+    #report_html.write("<tr bgcolor=#858585 align=center class=title><td width=\"250\">Server</td><td width=\"100\">User</td><td width=\"150\">ExecOpt</td></tr>\n")
+    report_html.write("<tr class=title><td width=\"250\">DataBase</td><td width=\"150\">ExecOpt</td><td width=\"100\">Run Times</td></tr>\n")
+    report_html.write("<tr class=desc><td><B>"+param.server+"</B></td><td>" + param.execopt+ "</td><td>" +str(len(testResult.testsuite_list))+ "</td></tr>\n")
+    #report_html.write("<tr align=center bgcolor=#FFFFFF class=desc><td><B>"+param.server+"</B></td><td>"+param.user+"</td><td>" + param.execopt+ "</td></tr>\n")
 
     report_html.write("</table>\n")
     report_html.write("<br>")
 
-    # TestSuite Summary
-    report_html.write("<head><center><font face=\"黑体\" size=5 color=0xF0F0F> Summary </center></head>\n")
+    #TestSuite Summary
+    report_html.write("<head><center style=\"margin-top:10px;\"><font>Summary</font></center></head>\n")
     report_html.write("<body><table cellpadding=\"0\" cellspacing=\"0\" align=\"center\"\n>")
-    # report_html.write("<tr bgcolor=#858585 align=center class=title><td width=\"250\">Test Suite</td><td width=\"100\">Num of Testcase</td><td width=\"200\">LogPath</td><td width=\"100\">Result</td><td width=\"100\">Pass Rate</td></tr>\n")
-    report_html.write(
-        "<tr bgcolor=#858585 align=center class=title><td width=\"60\">Run Time</td><td width=\"250\">Test Suite</td><td width=\"100\">Num of Testcase</td><td width=\"200\">LogPath</td><td width=\"100\">Result</td><td width=\"100\">Pass Rate</td><td width=\"500\">RichTextLog</td></tr>\n")
-    # blue color: #034579
+    #report_html.write("<tr bgcolor=#858585 align=center class=title><td width=\"250\">Test Suite</td><td width=\"100\">Num of Testcase</td><td width=\"200\">LogPath</td><td width=\"100\">Result</td><td width=\"100\">Pass Rate</td></tr>\n")
+    report_html.write("<tr class=title><td width=\"60\">Run Time</td><td width=\"250\">Test Suite</td><td width=\"100\">Num of Testcase</td><td width=\"200\">LogPath</td><td width=\"100\">Result</td><td width=\"100\">Pass Rate</td><td width=\"500\">RichTextLog</td></tr>\n")
+#blue color: #034579
     for testsuite in testResult.testsuite_list:
         if testsuite.status == "Passed":
-            report_html.write("<tr align=center bgcolor=#FFFFFF class=desc><td>" \
+            report_html.write("<tr class=desc><td>" \
                               + str(testResult.testsuite_list.index(testsuite) + 1) + "</td>" + "<td>" \
                               + testsuite.param.testname + "</td>" + "<td>" \
                               + str(len(testsuite.testcaseList)) + "</td>" + "<td>" \
- \
+  \
                               + testsuite.file + "</td><td style=\"color:green;\">" \
                               + testsuite.status + "</td><td style=\"color:green;\">" \
                               + testsuite.getPassRate() + "</td>" + "<td><a href='" \
                               + testsuite.loginfo.path + "'>" \
                               + testsuite.loginfo.path + "</a></td></tr>\n")
         else:
-            report_html.write("<tr align=center bgcolor=#FFFFFF class=desc><td>" \
+            report_html.write("<tr class=desc><td>" \
                               + str(testResult.testsuite_list.index(testsuite) + 1) + "</td>" + "<td>" \
                               + testsuite.param.testname + "</td>" + "<td>" \
                               + str(len(testsuite.testcaseList)) + "</td>" + "<td>" \
@@ -323,11 +326,11 @@ def generateHTMLReport(testResult):
     report_html.write("</table>\n")
     report_html.write("<br>")
 
-    # TestCase Detail
-    report_html.write("<head><center><font face=\"黑体\" size=5 color=0xF0F0F>TestCase Details</center></head>\n")
+    #TestCase Detail
+    report_html.write("<head><center style=\"margin-top:10px;\"><font>TestCase Details</font></center></head>\n")
     report_html.write("<body><table cellpadding=\"0\" cellspacing=\"0\" align=\"center\"\n>")
     report_html.write(
-        "<tr bgcolor=#858585 align=center class=title><td width=\"60\">Run Time</td><td width=\"150\">Test Suite</td><td width=\"200\">TestCaseName</td><td width=\"80\">Result</td><td width=\"300\">Error Message</td><td width=\"300\">Component</td></tr>\n")
+        "<tr align=center class=title><td width=\"60\">Run Time</td><td width=\"150\">Test Suite</td><td width=\"200\">TestCaseName</td><td width=\"80\">Result</td><td width=\"300\">Error Message</td><td width=\"300\">Component</td></tr>\n")
 
     for testsuite in testResult.testsuite_list:
         testcaseList = testsuite.testcaseList
@@ -347,21 +350,25 @@ def generateHTMLReport(testResult):
             status = item.status
 
             if status == "Passed":
-                report_html.write("<tr align=center bgcolor=#FFFFFF class=desc><td>" \
+                report_html.write("<tr class=desc><td>" \
                                   #+ str(testResult.testsuite_list.index(testsuite) + 1) + "</td>" + "<td>" \
                                   #+ testsuite.param.testname + "</td><td>" \
                                   # + str(exec_id) + "</B></td><td>" \
                                   + testcase_name + "</td><td style=\"color:green;\">" \
                                   + status + "</td><td>" + "None" + "</td><td>" + "None" + "</td></tr>\n")
             else:
-                failed_info = item.failedMsg.toString()
-                report_html.write("<tr align=center bgcolor=#FFFFFF class=desc><td>" \
+               # failed_info = item.failedMsg.toString()
+                msg =item.failedMsg.failedInfo["Msg"]
+                component=item.failedMsg.failedInfo["Menu"]
+                component = component+"."+ item.failedMsg.failedInfo["Component"]
+                component = component+"()"
+                report_html.write("<tr class=desc><td>" \
                                   #+ str(testResult.testsuite_list.index(testsuite) + 1) + "</td>" + "<td>" \
                                   #+ testsuite.param.testname + "</td><td>" \
                                   # + str(exec_id) + "</B></td><td>" \
                                   + testcase_name + "</td><td style=\"color:red;\">" \
                                   + status + "</td><td>" \
-                                  + failed_info + "</td><td>" + "testing" + "</td></tr>\n")
+                                  + msg + "</td><td>" + component + "</td></tr>\n")
 
     report_html.write("</table>\n")
     report_html.write("<br>")
