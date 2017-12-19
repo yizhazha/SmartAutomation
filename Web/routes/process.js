@@ -15,13 +15,17 @@ var jenkinsapi = require('jenkins-api');
 
 router.get('/', function(req, res) {
 
+    var Product = req.query.Product;
     var UOW = req.query.UOW;
-    var Database = req.query.Database;
+    var URL = req.query.Database;
     var Email = req.query.Email;
+    var DBName = URL.slice(39,47);
+    //console.log(DBName);
+
 
     var jenkins = jenkinsapi.init("http://localhost:8080");
 
-    jenkins.build_with_params('Test_parms', {UOW: UOW, Database: Database, Email: Email }, function(err, data) {
+    jenkins.build_with_params('Test_parms', {Product: Product, UOW: UOW, URL: URL, DBName: DBName, Email: Email }, function(err, data) {
         if (err){ return console.log(err); }
         console.log(data)
     });

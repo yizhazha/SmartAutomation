@@ -23,8 +23,15 @@ body, table {
     color: white;
     width: 100%;
     margin-top: 150px;
-    font-size: 43pt;
+    font-size: 45pt;
     text-align: center;
+}
+
+#loginView select {
+    height: 30px;
+    width: 270px;
+    margin-left: 15px;
+    font-size: inherit;
 }
 
 #loginView input[type = "text"] {
@@ -32,6 +39,11 @@ body, table {
     width: 270px;
     font-size: inherit;
     margin-left: 15px;
+}
+
+#loginView label {
+    color: white;
+    font-size: 25pt;
 }
 
 #loginView input[type = "button"] {
