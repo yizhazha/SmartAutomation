@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Author: ally.yu@oracle.com; nina.zhao@oracle.com#
+
 import ConfigParser
 import datetime
 import smtplib
@@ -36,36 +38,38 @@ file.close()
 UOW = fileJson["UOW"]
 BugNo = fileJson["BugNo"]
 User = fileJson["User"]
-print User
 Products = fileJson["Products"]
-print Products
 emails=[]
 emails.append(User)
-print emails
-#Get the default product owner
+#Define the default product owner
 ownerDict={"Expense": "ally.yu@oracle.com",
+           "Billing": "qi.dai@oracle.com",
+           "eBill Payment": "qi.dai@oracle.com",
+           "Purchasing": "aifeng.shi@oracle.com",
            "Accounts Receivable": "nina.zhao@oracle.com, dinga.du@oracle.com",
-           "Billing": "dai.qi@oracle.com, dinga.du@oracle.com"}
+           "Billing": "dai.qi@oracle.com, dinga.du@oracle.com",
+           "Inventory": "xiuyi.du@oracle.com",
+           "Mobile Inventory":"xiuyi.du@oracle.com",
+           "Order Management": "shuang.he@oracle.com",
+           "Cost Management": "changqin.he@oracle.com",
+           "Manufacturing": "changqin.he@oracle.com",
+           "Supplier Scorecarding": "changqin.he@oracle.com",}
 owneremails = []
 if productsel == "*":
     for item in Products:
-        print item
         owneremail  = ownerDict[item]
         if owneremail != 'NULL':
-            # owneremails = []
             owneremails+=owneremail.split(',')
-            print owneremails
 
 else:
         owneremail = ownerDict[productsel]
         if owneremail != 'NULL':
-            # owneremails = []
             owneremails=owneremail.split(',')
-            print owneremails
 
 
 #Email List Combine
-emails=emails+owneremails
+# emails=emails+owneremails
+emails.extend(owneremails)
 emails=list(set(emails))
 print emails
 
