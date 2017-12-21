@@ -44,6 +44,7 @@ emails.append(User)
 #Define the default product owner
 ownerDict={"Expense": "ally.yu@oracle.com",
            "Billing": "qi.dai@oracle.com",
+           "Accounts Receivable": "yue.xu@oracle.com",
            "eBill Payment": "qi.dai@oracle.com",
            "Purchasing": "aifeng.shi@oracle.com",
            "Accounts Receivable": "nina.zhao@oracle.com, dinga.du@oracle.com",
