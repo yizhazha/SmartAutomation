@@ -1,3 +1,0 @@
-[product_owner]
-Expense = julie.chai@oracle.com
-Accounts Receivable = nina.zhao@oracle.com, dinga.du@oracle.com

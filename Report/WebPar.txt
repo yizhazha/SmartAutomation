@@ -1,3 +1,8 @@
-[send_email]
+[products]
+product = *
+
+
+
+
 email = ally.yu@oracle.com, dinga.du@oracle.com
 
