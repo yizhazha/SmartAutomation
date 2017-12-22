@@ -7,8 +7,8 @@
 # Created:     17/12/2017
 # Copyright:   (c) xiangll 2017
 # Licence:     <your licence>
-# Introduction: This module receives 7 parameters to get correct JSON file and execute PTF tests.
-# Usage example: python TestsToRun.py 84077 E9200TS1 email@123.com C:\D\SmartAutomation\CI\JSON_files EP92PROD slc05EHL.US.ORACLE.COM:8001 \\slcnas463.us.oracle.com\enterprise\QEShare\SmartAutomation\PTF_Log
+# Introduction: This module receives 6 parameters to get correct JSON file and execute PTF tests.
+# Usage example: python TestsToRun.py 84077 E9200TS1 email@123.com C:\D\SmartAutomation\CI\JSON_files EP92PROD slc05EHL.US.ORACLE.COM:8001
 # Notice: Any path should not incldue SPACE.
 #-------------------------------------------------------------------------------
 
@@ -63,15 +63,16 @@ def get_JSONFile(uow, exo, email, filePath):
 ##filePath = sys.argv[4]
 
 # Loop execute PTF tests. Return number and name_list of NO RUN PTF tests
-# External call example: diff_num, diff_list = TestsToRun.run_ptf_tests(DB_name, server_port, exo, log_dir)
-def run_ptf_tests(DB_name, server_port, exo, log_dir):
+# External call example: diff_num, diff_list = TestsToRun.run_ptf_tests(DB_name, server_port, exo)
+def run_ptf_tests(DB_name, server_port, exo):
     test_framework = '"C:\\Program Files\\PeopleSoft\\PeopleSoft Test Framework\\PsTestFw.exe"'
     plan_list = []  #List of tests planed to execute
     exec_list = []  #List of tests actually executed
     # Execute PTF tests product by product
     for product in (json_data["Products"]):
         for test in (json_data[product]):
-            execute_str = test_framework + " -CD=" + DB_name + " -CS=" + server_port + " -CO=VP1 -CP=VP1 -TST=" + test["test_Name"] + " -CUA=TRUE -TC=" + test["test_Case"] + " -EXO=" + exo + " -LOG=" + log_dir + "\\" + test["test_Name"] + ".xml"
+            #execute_str = test_framework + " -CD=" + DB_name + " -CS=" + server_port + " -CO=VP1 -CP=VP1 -TST=" + test["test_Name"] + " -CUA=TRUE -TC=" + test["test_Case"] + " -EXO=" + exo + " -LOG=" + log_dir + "\\" + test["test_Name"] + ".xml"
+            execute_str = test_framework + " -CD=" + DB_name + " -CS=" + server_port + " -CO=VP1 -CP=VP1 -TST=" + test["test_Name"] + " -CUA=TRUE -TC=" + test["test_Case"] + " -EXO=" + exo
             plan_list.append(test["test_Name"])
             ret = subprocess.call(execute_str, shell=True)
             if ret != 0:
@@ -79,11 +80,16 @@ def run_ptf_tests(DB_name, server_port, exo, log_dir):
             else:
                 print("%s executed successfully." % (execute_str))
 
-    exec_lists = os.listdir(log_dir)
-    for logxml in exec_lists:
-        #log = logxml.split(".")
-        log = os.path.splitext(logxml)
-        exec_list.append(log[0])
+    #Log_dir
+    jsonName = os.path.splitext(json_name)
+    log_dir = os.path.join("\\\slcnas463.us.oracle.com\enterprise\QEShare\SmartAutomation\PTF_Log", jsonName[0])
+
+    files = os.listdir(log_dir)
+    for file in files:
+        if os.path.splitext(file)[1] == ".xml":
+            log = file.split("-")
+            #log = os.path.splitext(file)
+            exec_list.append(log[0])
     diff_num = len(plan_list) - len(exec_list)  # Number of no run tests
     diff_list = list(set(plan_list).difference(set(exec_list))) # List of no run tests' name
     print diff_num
@@ -91,7 +97,7 @@ def run_ptf_tests(DB_name, server_port, exo, log_dir):
     return (diff_num, diff_list)
 
 #Start below:
-script, uow, exo, email, filePath, DB_name, server_port, log_dir= sys.argv
+script, uow, exo, email, filePath, DB_name, server_port = sys.argv
 
 #Get JSON file name
 json_name = get_JSONFile(uow, exo, email, filePath)
@@ -101,7 +107,7 @@ json_file = os.path.join(filePath, json_name)
 with open(json_file, 'r') as f:
     json_data = json.load(f)
 #Execute PTF tests
-run_ptf_tests(DB_name, server_port, exo, log_dir)
+run_ptf_tests(DB_name, server_port, exo)
 
 
 ##if __name__ == '__main__':
