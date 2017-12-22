@@ -8,6 +8,8 @@ import os
 import json
 import xmltodict
 from email.mime.text import MIMEText
+import CI.FindJSON
+import sys
 
 
 ##--Beginning of Loading result.html##
@@ -29,9 +31,11 @@ fp.close()
 cfe=ConfigParser.ConfigParser()
 cfe.read("WebPar.txt")
 productsel= cfe.get("products","product")
-
 #Get the UOW and User info from JSON file
-path = "C:" + os.sep + "Python27" + os.sep + "EX" + os.sep + "84077_E92BISD2_daiqi@oracle.com_20171218221958.json"
+# path = "C:" + os.sep + "Python27" + os.sep + "EX" + os.sep + "84077_E92BISD2_daiqi@oracle.com_20171218221958.json"
+filePath = sys.argv[4]
+jsonfilename=FindJSON.json_name
+path=filePath+os.sep+jsonfilename
 file=open(path)
 fileJson= json.load(file)
 file.close()
@@ -48,7 +52,7 @@ ownerDict={"Expense": "ally.yu@oracle.com",
            "eBill Payment": "qi.dai@oracle.com",
            "Purchasing": "aifeng.shi@oracle.com",
            "Accounts Receivable": "nina.zhao@oracle.com, dinga.du@oracle.com",
-           "Billing": "dai.qi@oracle.com, dinga.du@oracle.com",
+           "Billing": "qi.dai@oracle.com, dinga.du@oracle.com",
            "Inventory": "xiuyi.du@oracle.com",
            "Mobile Inventory":"xiuyi.du@oracle.com",
            "Order Management": "shuang.he@oracle.com",
@@ -66,7 +70,6 @@ else:
         owneremail = ownerDict[productsel]
         if owneremail != 'NULL':
             owneremails=owneremail.split(',')
-
 
 #Email List Combine
 # emails=emails+owneremails
