@@ -128,6 +128,12 @@ class TestSuite():
             passRate = round(RawpassRate, 3)
             return str(passRate * 100) + "%"
 
+    def getResultNum(self ,PassOrFailed):
+        num = 0
+        for case in self.testcaseList:
+            if case.status == PassOrFailed:
+                num = num + 1
+        return str(num)
 
 class TestStep():
     def __init__(self, name, status, id):
@@ -182,9 +188,9 @@ class TestCase():
 
 
 class LogExport():
-    def __init__(self, loginfo):
-        self.path = loginfo["Path"] + "\\" + loginfo["File"];
-
+    def __init__(self, logExport):
+        #self.path = loginfo["Path"] + "\\" + loginfo["File"];
+        self.path = logExport["Path"];
 
 def convertXMLToJson(path):
     f = open(path, 'r')
@@ -283,7 +289,7 @@ def generateHTMLReport(testResult):
     '''check runtime env'''
     param = testResult.testsuite_list[0].param
     #report_html.write("<head><center><font face=\"Segoe UI\" size=5 color=0xF0F0F>ENV</center></head>\n")
-    report_html.write("<head><center style=\"margin-top:10px;\"><font>ENV</font></center></head>\n")
+    report_html.write("<head><center style=\"margin-top:10px;\"><font>Environment</font></center></head>\n")
     #report_html.write("<p> ENV </p>\n")
     report_html.write("<body><table cellpadding=\"0\" cellspacing=\"0\" align=\"center\"\n>")
     #report_html.write("<tr bgcolor=#858585 align=center class=title><td width=\"250\">Server</td><td width=\"100\">User</td><td width=\"150\">ExecOpt</td></tr>\n")
@@ -298,7 +304,8 @@ def generateHTMLReport(testResult):
     report_html.write("<head><center style=\"margin-top:10px;\"><font>Summary</font></center></head>\n")
     report_html.write("<body><table cellpadding=\"0\" cellspacing=\"0\" align=\"center\"\n>")
     #report_html.write("<tr bgcolor=#858585 align=center class=title><td width=\"250\">Test Suite</td><td width=\"100\">Num of Testcase</td><td width=\"200\">LogPath</td><td width=\"100\">Result</td><td width=\"100\">Pass Rate</td></tr>\n")
-    report_html.write("<tr class=title><td width=\"60\">Run Time</td><td width=\"250\">Test Suite</td><td width=\"100\">Num of Testcase</td><td width=\"200\">LogPath</td><td width=\"100\">Result</td><td width=\"100\">Pass Rate</td><td width=\"500\">RichTextLog</td></tr>\n")
+    #report_html.write("<tr class=title><td width=\"60\">Run Time</td><td width=\"250\">Test Suite</td><td width=\"100\">Num of Testcase</td><td width=\"200\">LogPath</td><td width=\"100\">Result</td><td width=\"100\">Pass Rate</td><td width=\"500\">RichTextLog</td></tr>\n")
+    report_html.write("<tr class=title><td width=\"60\">Run Time</td><td width=\"250\">Test Suite</td><td width=\"100\">Num of Testcase</td><td width=\"100\">Number of Pass</td><td width=\"100\">Number of Fail</td><td width=\"500\">RichTextLogPath</td></tr>\n")
 #blue color: #034579
     for testsuite in testResult.testsuite_list:
         if testsuite.status == "Passed":
@@ -316,12 +323,15 @@ def generateHTMLReport(testResult):
             report_html.write("<tr class=desc><td>" \
                               + str(testResult.testsuite_list.index(testsuite) + 1) + "</td>" + "<td>" \
                               + testsuite.param.testname + "</td>" + "<td>" \
-                              + str(len(testsuite.testcaseList)) + "</td>" + "<td>" \
-                              + testsuite.file + "</td><td style=\"color:red;\">" \
-                              + testsuite.status + "</td><td style=\"color:red;\">" \
-                              + testsuite.getPassRate() + "</td>" + "<td><a href='" \
-                              + testsuite.loginfo.path + "'>" \
-                              + testsuite.loginfo.path + "</a></td></tr>\n")
+                              + str(len(testsuite.testcaseList)) + "</td>" \
+                             # + testsuite.file + "</td>"
+                             # + testsuite.status + "</td><td style=\"color:red;\">" \
+                             # + testsuite.getPassRate() + "</td>" + "<td><a href='" \
+                             # + testsuite.loginfo.path + "'>" \
+                              + "<td>" +testsuite.getResultNum("Passed")+ "</td>" \
+                              + "<td>" + testsuite.getResultNum("Failed") + "</td>" \
+                              + "<td>" + testsuite.loginfo.path + "</td> "
+                              "</tr>\n")
 
     report_html.write("</table>\n")
     report_html.write("<br>")
