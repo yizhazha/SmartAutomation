@@ -43,10 +43,12 @@ def get_JSONFile(uow, exo, email, filePath):
     print "JSON file found: " + fileName
     return fileName
 
-uow = sys.argv[1]
-exo = sys.argv[2]
-email = sys.argv[3]
-filePath = sys.argv[4]
+##uow = sys.argv[1]
+##exo = sys.argv[2]
+##email = sys.argv[3]
+##filePath = sys.argv[4]
+
+script, uow, exo, email, filePath = sys.argv
 
 json_name = get_JSONFile(uow,exo,email,filePath)
 
