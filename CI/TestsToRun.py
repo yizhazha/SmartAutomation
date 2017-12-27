@@ -168,16 +168,22 @@ for product in (json_data["Products"]):
     for test in (json_data[product]):
        tests.append(test["test_Name"])
 
-# Backup PTF tests
-db_name = 'EP92PDVL'
-ps_tool_path = '\\\\psbldfs\\dfs\\build\\pt\\ptship\\pt85603c\\install_Windows.ora\\bin\\client\\winx86\\pside.exe'
-User_ID='VP1'
+# Backup PTF tests from EP92PDVL
+##db_name = 'E92AUQA1'
+##ps_tool_path = 'C:\SmartAutomation\pt\bin\client\winx86\pside.exe'
+##User_ID='VP1'
 ##User_Password='VP1'
+##db_user_name='emdbo'
+##db_password='emdbo123'
+
+db_name = 'EP92PDVL'
+ps_tool_path = 'C:\SmartAutomation\pt\\bin\client\winx86\pside.exe'
+User_ID='VP1'
 User_Password='QEDMO'
-db_user_name='emdbo'
-db_password='emdbo123'
+db_user_name='people'
+db_password='peop1e'
 t_db_name= exo
-t_ps_tool_path = '\\\\psbldfs\\dfs\\build\\pt\\ptship\\pt85603c\\install_Windows.ora\\bin\\client\\winx86\\pside.exe'
+t_ps_tool_path = 'C:\SmartAutomation\pt\\bin\client\winx86\pside.exe'
 t_User_ID='VP1'
 t_User_Password='VP1'
 #tests=['PYSHELL01','PYSHELL02']
@@ -189,9 +195,9 @@ copyfromprjcmd = "%s -HIDE -PJFF %s -FP c:\\temp\\export -CT ORACLE -CD %s -CO %
 test_list = get_all_test(tests)
 app = application.Application()
 app.start(ps_tool_path)
-time.sleep(10)
+time.sleep(15)
 login(app, db_name,User_ID,User_Password)
-time.sleep(10)
+time.sleep(15)
 main_form=app.top_window()
 add_test(app,test_list,main_form)
 main_form=app.top_window()
