@@ -31,7 +31,7 @@ router.get('/', function(req, res) {
 
     var jenkins = jenkinsapi.init("http://localhost:8080");
 
-    jenkins.build_with_params('Test_parms', {Product: Product, UOW: UOW, URL: URL, DBName: DBName, Server_Port: Server_Port, Email: Email }, function(err, data) {
+    jenkins.build_with_params('Init_Job_Params', {Product: Product, UOW: UOW, URL: URL, DBName: DBName, Server_Port: Server_Port, Email: Email }, function(err, data) {
         if (err){ return console.log(err); }
         console.log(data)
     });
