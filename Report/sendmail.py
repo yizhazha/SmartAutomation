@@ -8,17 +8,18 @@ import os
 import json
 import xmltodict
 from email.mime.text import MIMEText
-import CI.FindJSON
+import FindJSON
 import sys
 
 
 ##--Beginning of Loading result.html##
-# get folder name by timestamp MMddYY
-folder_name = datetime.datetime.now().strftime("%Y%m%d")
+jsonfolder = FindJSON.get_JSONFile(uow,exo,email,filePath)[:-5]
+folder_name = filePath + os.sep + jsonfolder
 
 cf = ConfigParser.ConfigParser()
 cf.read("config.conf")
 HTMLOUTPUT = cf.get("source_dir","LOGDIR")+folder_name+"/result.html"
+# print HTMLOUTPUT
 
 # load html report
 fp=open(HTMLOUTPUT, 'rb')
@@ -28,13 +29,15 @@ fp.close()
 ##--Ending of Loading result.html##
 
 # Get the product selection from Web UI
-cfe=ConfigParser.ConfigParser()
-cfe.read("WebPar.txt")
-productsel= cfe.get("products","product")
+# cfe=ConfigParser.ConfigParser()
+# cfe.read("WebPar.txt")
+# productsel= cfe.get("products","product")
+productsel=sys.argv[5]
 #Get the UOW and User info from JSON file
 # path = "C:" + os.sep + "Python27" + os.sep + "EX" + os.sep + "84077_E92BISD2_daiqi@oracle.com_20171218221958.json"
-filePath = sys.argv[4]
-jsonfilename=FindJSON.json_name
+filepath = sys.argv[4]
+jsonfname = FindJSON.json_name
+jsonfpath = os.path.join(filepath, jsonfname)
 path=filePath+os.sep+jsonfilename
 file=open(path)
 fileJson= json.load(file)
