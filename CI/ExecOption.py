@@ -12,10 +12,11 @@ exo = sys.argv[2]
 email = sys.argv[3]
 filePath = sys.argv[4]
 URL = sys.argv[5]
+hostName = URL.split['.'][0].split('//')[1]
 
 json = FindJSON.get_JSONFile(uow,exo,email,filePath)[:-5]
 
-def set_ExecutionOption(DBName,URL):
+def set_ExecutionOption(exo,hostName):
     dms = file(os.getcwd()+"\setupExecOption.dms", "w+")
     print dms
     line1 = """SET LOG \\\psbldfs.us.oracle.com\dfs\enterprise\QEShare\QEO-Partner\DataMover_Scripts\setupExecOption.log;
@@ -27,7 +28,7 @@ def set_ExecutionOption(DBName,URL):
     dms.writelines('\n')
     line2 = """--Add Execution Option--
     delete from PSPTTSTOPTIONS where PTTST_EXOP_NAME = '%s';
-    COMMIT;""" % DBName
+    COMMIT;""" % exo
     dms.writelines(line2)
     dms.writelines('\n')
     line3 = """Insert into PSPTTSTOPTIONS values (
@@ -62,11 +63,11 @@ def set_ExecutionOption(DBName,URL):
             'Y',
             'N'
         );
-    COMMIT;""" % (DBName, URL, DBName.lower(), DBName,json)
+    COMMIT;""" % (exo, hostName, exo.lower(), exo,json)
     dms.writelines(line3)
     dms.writelines('\n')
     line4 = """delete from PSPTTSTOPT_URL where PTTST_EXOP_NAME = '%s';
-    COMMIT;""" % DBName
+    COMMIT;""" % exo
     dms.writelines(line4)
     dms.writelines('\n')
     line5 = """Insert into PSPTTSTOPT_URL values (
@@ -74,12 +75,12 @@ def set_ExecutionOption(DBName,URL):
             'PORTAL',
             'http://%s.us.oracle.com:8000/psc/%sx/EMPLOYEE/ERP/'
         );
-    COMMIT;""" % (DBName, URL, DBName.lower())
+    COMMIT;""" % (exo, hostName, exo.lower())
     dms.writelines(line5)
 
 
 if __name__ == '__main__':
-    set_ExecutionOption(exo,URL)
+    set_ExecutionOption(exo,hostName)
 
 
 
