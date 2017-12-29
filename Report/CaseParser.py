@@ -3,8 +3,12 @@ import xmltodict
 import json
 import os
 import ConfigParser
-import datetime
-
+import datetime,logging
+from optparse import OptionParser
+logging.basicConfig(format='%(asctime)s-%(process)d-%(levelname)s: %(message)s')
+log = logging.getLogger('result_analysis')
+log.setLevel(logging.DEBUG)
+'''
 # get folder name by timestamp MMddYY
 folder_name = datetime.datetime.now().strftime("%Y%m%d")
 
@@ -13,19 +17,28 @@ cf = ConfigParser.ConfigParser()
 # read config file
 cf.read("config.conf")
 SOURCE_DIR = cf.get("source_dir", "LOGDIR")
+
+
 # return all items
 LOGDIR = SOURCE_DIR + folder_name + "/"
 RESULT_XML = SOURCE_DIR + folder_name + "/log-new.xml"
 OUTPUT = SOURCE_DIR + folder_name + "/result.xml"
 HTMLOUTPUT = SOURCE_DIR + folder_name + "/result.html"
+'''
+class GlobalParameters:
 
-# delete report.html if it exists
-if os.path.exists(OUTPUT):
-    os.remove(OUTPUT)
-if os.path.exists(OUTPUT):
-    os.remove(HTMLOUTPUT)
+    def __init__(self, source_dir="", folder_name="", file_name=""):
+        self.source_dir = source_dir
+        self.folder_name = folder_name
+        self.file_name = file_name
 
-files = os.listdir(LOGDIR)
+        #self.log_dir = "%s%s\%s"%(self.source_dir,self.folder_name,self.file_name)
+        self.log_dir = self.source_dir + self.folder_name + '/'+self.file_name
+        self.result_xml = "%s%s\\report\\result.xml"%(self.source_dir,self.folder_name)
+        self.output = "%s\%s\\report\\output.xml"%(self.source_dir,self.folder_name)
+        self.html_output = "%s\%s\\report\\result.html"%(self.source_dir,self.folder_name)
+        self.report_folder = "%s%s\\report\\"%(self.source_dir,self.folder_name)
+
 
 MAX = 9999999999
 
@@ -99,7 +112,7 @@ class TestSuite():
         result = {"result": doc}
         convertedXml = xmltodict.unparse(result)
 
-        file_object = open(OUTPUT, 'w')
+        file_object = open(g_para.output, 'w')
         file_object.write(convertedXml)
         file_object.close()
 
@@ -202,7 +215,7 @@ def findAllTestCase(caseDict):
     testCaseList = []
     for key in caseDict:
         if "Exec" in key:
-            if "EX_TEST" in caseDict[key]["Name"]:
+            if "_TEST_" in caseDict[key]["Name"] or "GL_" in caseDict[key]["Name"]:
                 # this is test case
                 case = TestCase(caseDict[key]["Name"], caseDict[key]["Status"], int(key[4:]))
                 for item in caseDict[key].keys():
@@ -227,7 +240,7 @@ def putStepIntoTestCase(testCaseList, step):
 def mapStepToTestCase(testCaseList, steps):
     for key in steps:
         if "Exec" in key:
-            if "EX_TEST" in steps[key]["Name"]:  # this is a testCase, just ignore
+            if "_TEST" in steps[key]["Name"] or "GL_" in steps[key]["Name"]:  # this is a testCase, just ignore
                 continue
 
             step = TestStep(steps[key]["Name"], steps[key]["Status"], int(key[4:]))
@@ -267,8 +280,8 @@ def output(testCaseList):
             print "TestStep: " + step.name + " : " + step.status
 
 
-def generateHTMLReport(testResult):
-    report_html = open(HTMLOUTPUT, "wb")
+def generateHTMLReport(testResult,g_para):
+    report_html = open(g_para.html_output, "wb")
     report_html.write("<html><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n")
     report_html.write("<style type=\"text/css\">\n")
     report_html.write("<!--\n")
@@ -385,17 +398,58 @@ def generateHTMLReport(testResult):
 
 
 if __name__ == "__main__":
-    # main()
+
+    # get the input
+    usage = "usage: python -T <tag> -P <log path> "
+    parser = OptionParser(usage=usage, epilog="")
+    parser.add_option("-F", "--folder", type="string", help="folder name", default="staging")
+    parser.add_option("-S", "--path", type="string", help="source folder name", default="staging")
+    (options, args) = parser.parse_args()
+
+    #read config file
+    #folder_name = datetime.datetime.now().strftime("%Y%m%d")
+    source_dir = parser.values.path
+    folder_name = parser.values.folder
+    temp_info = folder_name.split("_")
+    UOW_id = temp_info[0]
+    DB_info = temp_info[1]
+    email_info = temp_info[2]
+    date_info = temp_info[3]
+    file_name = UOW_id+"_"+DB_info+"_"+email_info+".xml"
+
+    cf = ConfigParser.ConfigParser()
+    cf.read("config.conf")
+
+    #init g_para
+    g_para = GlobalParameters(source_dir,folder_name, file_name)
+
+ #   log.info("---------------------------Parameters-------------------------------------")
+#    log.info("file name:     " + options.file)
+ #   log.info("--------------------------------------------------------------------------")
+
+    # create report folder
+    if not os.path.exists(g_para.report_folder):
+        os.mkdir(g_para.report_folder)
+
+    # delete report.html if it exists
+    if os.path.exists(g_para.output):
+        os.remove(g_para.output)
+
     testResult = TestResult()
+    '''
     # loop all the test result in the folder
-    files = os.listdir(LOGDIR)
+
+    files = os.listdir(g_para.log_dir)
     for file in files:
         if "xml" in file.split("."):
             # end with xml
-            target_file = LOGDIR + file
+            #target_file = g_para + file
+            target_file = g_para.log_dir
             testsuite = caseParser(target_file)
             testResult.addTestSuite(testsuite)
+'''
 
-    generateHTMLReport(testResult)
-
+    testsuite = caseParser(g_para.log_dir)
+    testResult.addTestSuite(testsuite)
+    generateHTMLReport(testResult, g_para)
     #  os.system('mutt -e ' + '"set content_type=text/html"' + " -s" + ' "Results of Automated Testing"' + " -c" + " " + "nina.zhao@oracle.com" + " " + "nina.zhao@oracle.com" + " < result")
