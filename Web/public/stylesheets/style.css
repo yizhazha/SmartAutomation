@@ -19,11 +19,24 @@ body, table {
     font-size: 13pt;
 }
 
+.loginTable td:nth-child(2n) {
+    text-align: left;
+}
+
+.loginTable td:nth-child(2n +1) {
+    width:45%;
+    text-align: right;
+}
+
+.loginTable .runTD {
+    text-align: center!important;
+}
+
 #loginTitle {
     color: white;
     width: 100%;
     margin-top: 150px;
-    font-size: 45pt;
+    font-size: 48pt;
     text-align: center;
 }
 
@@ -38,12 +51,13 @@ body, table {
     height: 30px;
     width: 270px;
     font-size: inherit;
-    margin-left: 15px;
+    margin-left: 15px;	
 }
 
 #loginView label {
     color: white;
     font-size: 25pt;
+	text-align: right;
 }
 
 #loginView input[type = "button"] {
@@ -58,9 +72,10 @@ body, table {
     margin-top: 10%;
 }
 
-#loginView table tr {
+#loginView table tr {	
     text-align: center;
-    height: 50%;
+	height: 50%;
+	
 }
 
 #loginView table tr td {
