@@ -29,7 +29,8 @@ router.get('/', function(req, res) {
         var DBName = tempURL[3].slice(0,-1);
     //console.log(DBName);
 
-    var jenkins = jenkinsapi.init("http://localhost:8080");
+    var jenkins = jenkinsapi.init("http://den00qhy.us.oracle.com:8090");
+    //var jenkins = jenkinsapi.init("http://localhost:8080");
 
     jenkins.build_with_params('Init_Job_Params', {Product: Product, UOW: UOW, URL: URL, DBName: DBName, Server_Port: Server_Port, Email: Email }, function(err, data) {
         if (err){ return console.log(err); }
