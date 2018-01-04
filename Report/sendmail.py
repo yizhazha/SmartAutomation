@@ -63,7 +63,7 @@ ownerDict={"Expense": "ally.yu@oracle.com",
            "Manufacturing": "changqin.he@oracle.com",
            "Supplier Scorecarding": "changqin.he@oracle.com",}
 owneremails = []
-if productsel == "*":
+if productsel == "ALL":
     for item in Products:
         owneremail  = ownerDict[item]
         if owneremail != 'NULL':
