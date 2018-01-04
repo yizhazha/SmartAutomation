@@ -1,0 +1,7 @@
+##ignore this file##
+/logs/
+/bin/
+/Cal_UOW_Output/
+.classpath
+.project
+.settings  
