@@ -11,28 +11,30 @@ var router = express.Router();
 
 
 var jenkinsapi = require('jenkins-api');
+var url = require("url");
 
 
 router.get('/', function(req, res) {
 
     var Product = req.query.Product;
     var UOW = req.query.UOW;
-    var URL = req.query.Database;
+    var URL = url.parse(req.query.Database);
+    console.log(URL);
     var Email = req.query.Email;
 
-    var tempURL = URL.split("/");
-    var Server_Port = tempURL[2];
 
-    if(tempURL[3] =="psp")
-        var DBName = tempURL[4].slice(0,-1);
-    else
-        var DBName = tempURL[3].slice(0,-1);
-    //console.log(DBName);
+    var newURL = URL.href.slice(0,URL.href.indexOf('&'));
+    console.log(newURL);
+    var DBName = URL.pathname.slice(URL.pathname.indexOf('/psp/')+5,-1);
+    console.log(DBName);
+
+    //var URLcode = encodeURIComponent(URL);
+    //console.log(URLcode);
 
     var jenkins = jenkinsapi.init("http://den00qhy.us.oracle.com:8090");
     //var jenkins = jenkinsapi.init("http://localhost:8080");
 
-    jenkins.build_with_params('Init_Job_Params', {Product: Product, UOW: UOW, URL: URL, DBName: DBName, Server_Port: Server_Port, Email: Email }, function(err, data) {
+   jenkins.build_with_params('Init_Job_Params', {Product: Product, UOW: UOW, URL: newURL, DBName: DBName, Server_Port: URL.host, Email: Email }, function(err, data) {
         if (err){ return console.log(err); }
         console.log(data)
     });
