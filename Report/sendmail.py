@@ -13,14 +13,29 @@ import sys
 
 
 ##--Beginning of Loading result.html##
-jsonfolder = FindJSON.get_JSONFile(uow,exo,email,filePath)[:-5]
-folder_name = filePath + os.sep + jsonfolder
-
 cf = ConfigParser.ConfigParser()
 cf.read("config.conf")
-HTMLOUTPUT = cf.get("source_dir","LOGDIR")+folder_name+"/result.html"
-# print HTMLOUTPUT
-
+uow=sys.argv[1]
+exo=sys.argv[2]
+email=sys.argv[3]
+filepath = sys.argv[4]
+productsel=sys.argv[5]
+# jsonfolder = FindJSON.get_JSONFile(uow,exo,email,filePath)[:-5]
+jsonfname = FindJSON.json_name
+jsonfolder=jsonfname[:-5]
+folder_name = filepath + os.sep + jsonfolder
+# jsonfpath = os.path.join(filepath, jsonfname)
+path=filepath+os.sep+jsonfname
+file=open(path)
+fileJson= json.load(file)
+file.close()
+UOW = fileJson["UOW"]
+BugNo = fileJson["BugNo"]
+User = fileJson["User"]
+Products = fileJson["Products"]
+emails=[]
+emails.append(User)
+HTMLOUTPUT = cf.get("source_dir","LOGDIR")+jsonfolder+"/result.html"
 # load html report
 fp=open(HTMLOUTPUT, 'rb')
 msg=MIMEText(fp.read(), 'html','utf-8');
@@ -32,22 +47,7 @@ fp.close()
 # cfe=ConfigParser.ConfigParser()
 # cfe.read("WebPar.txt")
 # productsel= cfe.get("products","product")
-productsel=sys.argv[5]
-#Get the UOW and User info from JSON file
-# path = "C:" + os.sep + "Python27" + os.sep + "EX" + os.sep + "84077_E92BISD2_daiqi@oracle.com_20171218221958.json"
-filepath = sys.argv[4]
-jsonfname = FindJSON.json_name
-jsonfpath = os.path.join(filepath, jsonfname)
-path=filePath+os.sep+jsonfilename
-file=open(path)
-fileJson= json.load(file)
-file.close()
-UOW = fileJson["UOW"]
-BugNo = fileJson["BugNo"]
-User = fileJson["User"]
-Products = fileJson["Products"]
-emails=[]
-emails.append(User)
+
 #Define the default product owner
 ownerDict={"Expense": "ally.yu@oracle.com",
            "Billing": "qi.dai@oracle.com",
@@ -81,6 +81,7 @@ emails=list(set(emails))
 print emails
 
 #Sendemail
+
 msg['Subject'] = 'UOW'+UOW+' '+'Impacted Automation Test Result'
 msg['From'] =cf.get("mail_server","From")
 msg['To'] = ','.join(emails)
