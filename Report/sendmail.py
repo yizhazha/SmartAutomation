@@ -35,7 +35,7 @@ User = fileJson["User"]
 Products = fileJson["Products"]
 emails=[]
 emails.append(User)
-HTMLOUTPUT = cf.get("source_dir","LOGDIR")+jsonfolder+"/result.html"
+HTMLOUTPUT = cf.get("source_dir","LOGDIR")+jsonfolder+'/Report'+"/result.html"
 # load html report
 fp=open(HTMLOUTPUT, 'rb')
 msg=MIMEText(fp.read(), 'html','utf-8');
