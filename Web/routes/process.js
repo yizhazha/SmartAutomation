@@ -25,7 +25,7 @@ router.get('/', function(req, res) {
 
     var newURL = URL.href.slice(0,URL.href.indexOf('&'));
     console.log(newURL);
-    var DBName = URL.pathname.slice(URL.pathname.indexOf('/psp/')+5,-1);
+    var DBName = URL.pathname.slice(URL.pathname.indexOf('/psp/')+5,-2).toUpperCase();
     console.log(DBName);
 
     //var URLcode = encodeURIComponent(URL);
