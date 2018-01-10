@@ -2,6 +2,7 @@
 # -*- coding UTF-8 -*-
 
 import glob
+import sys
 import os
 import copy
 import fnmatch
@@ -101,10 +102,18 @@ def insertDummyXML(targetNode,singleInfo,execSeq,flag):
 #if __name__ == "__main__":
 
 #Start below:
-script, uow, DB_name, email, log_dir, filePath, LOGPATH = sys.argv
+##script, uow, exo, DB_name, email, log_dir, filePath, LOGPATH = sys.argv
+
+uow = sys.argv[1]
+exo = sys.argv[2]
+DB_name = sys.argv[3]
+email = sys.argv[4]
+log_dir = sys.argv[5]
+filePath = sys.argv[6]
+LOGPATH = sys.argv[7]
 
 #Get JSON file name, including extension
-json_name = get_JSONFile(uow, exo, email, filePath)
+json_name = FindJSON.get_JSONFile(uow, exo, email, filePath)
 
 LOGDIR = log_dir + os.sep + json_name[:-5]
 #LOGPATH = "C:\SmartAutomation"

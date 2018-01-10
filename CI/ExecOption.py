@@ -7,14 +7,11 @@ import sys
 import os
 import FindJSON
 
-uow = sys.argv[1]
-exo = sys.argv[2]
-email = sys.argv[3]
-filePath = sys.argv[4]
-URL = sys.argv[5]
-hostName = URL.split['.'][0].split('//')[1]
-
-json = FindJSON.get_JSONFile(uow,exo,email,filePath)[:-5]
+#uow = sys.argv[1]
+#exo = sys.argv[2]
+#email = sys.argv[3]
+#filePath = sys.argv[4]
+#URL = sys.argv[5]
 
 def set_ExecutionOption(exo,hostName):
     dms = file(os.getcwd()+"\setupExecOption.dms", "w+")
@@ -78,6 +75,19 @@ def set_ExecutionOption(exo,hostName):
     COMMIT;""" % (exo, hostName, exo.lower())
     dms.writelines(line5)
 
+##script, uow, exo, email, filePath, URL = sys.argv
+
+uow = sys.argv[1]
+exo = sys.argv[2]
+email = sys.argv[3]
+filePath = sys.argv[4]
+URL = sys.argv[5]
+
+hostName = URL.split['.'][0].split('//')[1]
+
+json = FindJSON.get_JSONFile(uow,exo,email,filePath)[:-5]
+
+set_ExecutionOption(exo,hostName)
 
 if __name__ == '__main__':
     set_ExecutionOption(exo,hostName)
