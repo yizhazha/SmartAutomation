@@ -43,14 +43,13 @@ def get_JSONFile(uow, exo, email, filePath):
     print "JSON file found: " + fileName
     return fileName
 
-##uow = sys.argv[1]
-##exo = sys.argv[2]
-##email = sys.argv[3]
-##filePath = sys.argv[4]
 
-script, uow, exo, email, filePath = sys.argv
-
-json_name = get_JSONFile(uow,exo,email,filePath)
 
 #json_name = get_JSONFile("84077","E9200TS1","email@123.com","C:\D\SmartAutomation\CI\JSON_files")
 #json_file = os.path.join(filePath, json_name)
+if __name__ == '__main__':
+    uow = sys.argv[1]
+    exo = sys.argv[2]
+    email = sys.argv[3]
+    filePath = sys.argv[4]
+    json_name = get_JSONFile(uow, exo, email, filePath)
