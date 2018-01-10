@@ -117,6 +117,7 @@ def get_all_test(tests):
 # Login database
 def login(app, db_name,User_ID,User_Password):
     login_window = app.top_window()
+    login_window.Maximize()
     #login_window.print_control_identifiers()
     login_window['&Database Name:Edit0'].type_keys(db_name)
     login_window['&User ID:Edit'].type_keys(User_ID)
@@ -177,13 +178,13 @@ for product in (json_data["Products"]):
 ##db_password='emdbo123'
 
 db_name = 'EP92PDVL'
-ps_tool_path = 'C:\SmartAutomation\pt\\bin\client\winx86\pside.exe'
+ps_tool_path = 'C:\\SmartAutomation\\pt\\bin\\client\\winx86\\pside.exe'
 User_ID='VP1'
 User_Password='QEDMO'
 db_user_name='people'
 db_password='peop1e'
 t_db_name= exo
-t_ps_tool_path = 'C:\SmartAutomation\pt\\bin\client\winx86\pside.exe'
+t_ps_tool_path = 'C:\\SmartAutomation\\pt\\bin\\client\\winx86\\pside.exe'
 t_User_ID='VP1'
 t_User_Password='VP1'
 #tests=['PYSHELL01','PYSHELL02']
