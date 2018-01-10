@@ -41,7 +41,7 @@ public class AnalyzeALM {
 				sql.append(
 						"SELECT TS_TEST_ID FROM SCM_SCM_92_PRD_DB.TEST WHERE ts_status='Ready' and ts_type='PTF' and ts_user_08='Complete' and ts_user_37='");
 				sql.append(test.getTest_Name());
-				if (prodName != null && !prodName.equals("*")) {
+				if (prodName != null && !prodName.equals("")) {
 					sql.append("' AND TS_USER_03='" + prodName);
 				}
 				sql.append("' AND ts_user_39='");
@@ -50,7 +50,7 @@ public class AnalyzeALM {
 				sql.append(
 						"' UNION SELECT TS_TEST_ID FROM FMS_FMS_92_PRD_DB.TEST where ts_status='Ready' and ts_type='PTF' and ts_user_08='Complete' and ts_user_37='");
 				sql.append(test.getTest_Name());
-				if (prodName != null && !prodName.equals("*")) {
+				if (prodName != null && !prodName.equals("")) {
 					sql.append("' AND TS_USER_03='" + prodName);
 				}
 				sql.append("' AND ts_user_39='");
@@ -309,7 +309,7 @@ public class AnalyzeALM {
 
 			rs = alm.getQueryResult(sql.toString());
 			if (rs.next()) {
-				if (rs.getString("DS_LINK_TEST") != null && !rs.getString("DS_LINK_TEST").equals("")) {
+				if (rs.getString("DS_LINK_TEST") != null && !rs.getString("DS_LINK_TEST").trim().equals("")) {
 					call_test.setTest_ID(rs.getString("DS_LINK_TEST"));
 					call_test.setProduct(rs.getString("TS_USER_03"));
 					call_test.setPTF_Test(rs.getString("TS_USER_37"));

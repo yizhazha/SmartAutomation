@@ -108,7 +108,7 @@ public class AnalyzePeopleCode {
 
 					if (type == 58) {
 						log.info("Object " + i + ": [Application Package][" + value1 + "]");
-						computePackageDependency(testdb, mol.get(i));
+						computePackageDependency(mol.get(i));
 					}
 					if (type == 68) {
 						computeFileRefDependency(testdb, mol.get(i));
@@ -362,22 +362,25 @@ public class AnalyzePeopleCode {
 		cand_field.addAll(fieldList);
 	}
 
-	void computePackageDependency(DBUtil testdb, ModifiedObject mo) {
+	void computePackageDependency(ModifiedObject mo) {
 
 		List<PageRecordField> fieldList = new ArrayList<PageRecordField>();
 		String pck_root = mo.getObjValue1();
+		String refName = "%";
 		String dbfield = "";
 		int id1;
 		String recname = "";
 
 		String app_path = "";
-		if (!mo.getObjValue4().equals(""))
+		if (!mo.getObjValue4().trim().equals("")) {
 			app_path = mo.getObjValue2() + ":" + mo.getObjValue3();
-		else if (!mo.getObjValue3().equals(""))
+			refName = mo.getObjValue4().trim().toUpperCase();
+		} else if (!mo.getObjValue3().trim().equals("")) {
 			app_path = mo.getObjValue2();
+			refName = mo.getObjValue3().trim().toUpperCase();
+		}
 
 		StringBuilder sql = new StringBuilder();
-
 		sql.append(
 				"SELECT distinct OBJECTID1,OBJECTVALUE1, OBJECTID2, OBJECTVALUE2,OBJECTID3,OBJECTVALUE3,OBJECTID4,OBJECTVALUE4 FROM PSPCMNAME WHERE PACKAGEROOT='");
 		sql.append(pck_root);
@@ -385,10 +388,12 @@ public class AnalyzePeopleCode {
 			sql.append("' AND QUALIFYPATH = '");
 			sql.append(app_path);
 		}
-		sql.append("' ORDER BY OBJECTID1");
+		sql.append("' AND REFNAME like '" + refName + "'  ORDER BY OBJECTID1");
 
 		try {
-			ResultSet rs = testdb.getQueryResult(sql.toString());
+			DBUtil db = new DBUtil(new DBInfo("TESTDB"));
+			ResultSet rs = db.getQueryResult(sql.toString());
+			log.trace(sql);
 			while (rs.next()) {
 				id1 = rs.getInt("OBJECTID1");
 
@@ -403,15 +408,34 @@ public class AnalyzePeopleCode {
 				}
 				if (id1 == 10 && rs.getInt("OBJECTID3") == 1 && rs.getInt("OBJECTID4") == 2) {
 					PageRecordField field = new PageRecordField();
-					recname = rs.getString("OBJECTVALUE3");
-					dbfield = rs.getString("OBJECTVALUE4");
+					recname = rs.getString("OBJECTVALUE3").trim();
+					dbfield = rs.getString("OBJECTVALUE4").trim();
 					field.setRecord(recname);
 					field.setField(dbfield);
 					field.setPage("%");
 					fieldList.add(field);
 				}
+				if (id1 == 104) {
+					if (rs.getString("OBJECTVALUE1").trim().equals(mo.getObjValue1().trim())
+							&& (rs.getString("OBJECTVALUE2").trim().equals(mo.getObjValue2().trim()))
+							&& (rs.getString("OBJECTVALUE3").trim().equals(mo.getObjValue3().trim())))
+						;
+
+					else {
+						// String appClass=rs.getString("OBJECTVALUE2").trim();
+						ModifiedObject pMO = new ModifiedObject();
+						pMO.setObjValue1(rs.getString("OBJECTVALUE1").trim());
+						pMO.setObjValue2(rs.getInt("OBJECTID2") > 104 ? rs.getString("OBJECTVALUE2").trim() : "");
+						pMO.setObjValue3(rs.getInt("OBJECTID3") > 104 ? rs.getString("OBJECTVALUE3").trim() : "");
+						pMO.setObjValue4(rs.getInt("OBJECTID4") > 104 ? rs.getString("OBJECTVALUE4").trim() : "");
+						computePackageDependency(pMO);
+					}
+				}
 			}
-		} catch (SQLException e) {
+			db.closeConnection();
+		} catch (
+
+		Exception e) {
 			e.printStackTrace();
 		}
 		cand_field.addAll(fieldList);
@@ -421,23 +445,23 @@ public class AnalyzePeopleCode {
 	void computeFileRefDependency(DBUtil testdb, ModifiedObject mo) {
 
 		List<String> aeList = new LinkedList<String>();
-		
+
 		String value2 = mo.getObjValue2();
 		String prcs = mo.getObjValue1();
-		
+
 		if (value2.equals("SQR"))
-			prcs=prcs.substring(0,prcs.indexOf("_SQ"));
-		if(value2.equals("COBOL") ) 
-			prcs=prcs.substring(0,prcs.indexOf("_CBL"));
+			prcs = prcs.substring(0, prcs.indexOf("_SQ"));
+		if (value2.equals("COBOL"))
+			prcs = prcs.substring(0, prcs.indexOf("_CBL"));
 		else {
 			log.debug("[File Reference][" + mo.getObjValue1() + "] is used in PeopleCode: 0");
 			return;
 		}
 		try {
-			
-			
+
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT DISTINCT PRCSNAME FROM PS_PRCSDEFN WHERE PRCSTYPE='SQR Process' AND PRCSNAME='" + prcs + "'");
+			sql.append("SELECT DISTINCT PRCSNAME FROM PS_PRCSDEFN WHERE PRCSTYPE='SQR Process' AND PRCSNAME='" + prcs
+					+ "'");
 			ResultSet rs = testdb.getQueryResult(sql.toString());
 			while (rs.next()) {
 				prcs = rs.getString("PRCSNAME");
@@ -534,7 +558,8 @@ public class AnalyzePeopleCode {
 			}
 		}
 		cand_field.addAll(fieldList);
-		SmartAnalyze.log.debug("[Record][" + recname + "]["+fieldname+"] is used in PeopleCode: " + fieldList.size());
+		SmartAnalyze.log
+				.debug("[Record][" + recname + "][" + fieldname + "] is used in PeopleCode: " + fieldList.size());
 	}
 
 	/**
