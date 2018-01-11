@@ -36,14 +36,19 @@ public class SmartAnalyze {
 	public static void main(String[] args) {
 		
 		
-		/**
-		 * args[0]:UOW args[1]:Test DB Name. e.g E92BISD2
-		 * this is for debug
-		 */
+		
+		args[0]="91370";
+	//	 args[3]="Purchasing";
 		
 
 		String product=null;
-		if(args.length>3) product=args[3];		
+		
+		if(args.length>3) {
+			if (args[3].toUpperCase().equals("ALL"))
+				product="";
+			else
+				product=args[3];		
+		}
 		
 		log.warn("=================New Log Start===========================");
 		if(args.length<3) {
@@ -72,7 +77,7 @@ public class SmartAnalyze {
 		List<PTFTest> testlist=null;
 		
 		if(!DBInfo.setDBInfo("PTF", "EP92PROD")) return;
-		if(!DBInfo.setDBInfo("TESTDB", args[1]))return;
+		if(!DBInfo.setDBInfo("TESTDB", args[1].toUpperCase()))return;
 		
 		log.info("<<< Compute " + args[0] + " Modified Objects on Bass2 >>>");
 		mol=bass2.computeMOL(uow);

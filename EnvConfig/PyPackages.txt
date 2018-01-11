@@ -1,0 +1,4 @@
+cx_Oracle
+pywinauto
+xmltodict
+ConfigParser

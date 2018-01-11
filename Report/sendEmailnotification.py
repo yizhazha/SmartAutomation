@@ -9,18 +9,19 @@ import ConfigParser
 
 
 def sendhtmlemail():
-    # Get the product selection from Web UI
-    cfe = ConfigParser.ConfigParser()
-    cfe.read("WebPar.txt")
-    productsel = cfe.get("products", "product")
-    print productsel
+
+    productsel=sys.argv[5]
 
     jsonfname = FindJSON.json_name
     filepath = sys.argv[4]
     requester = sys.argv[3]
     jsonfpath = os.path.join(filepath, jsonfname)
+    jsonfullpath = jsonfpath
+    print jsonfullpath
 
-    with open(jsonfpath) as json_file:
+#    print jsonfname
+#    print jsonfullpath
+    with open(jsonfullpath) as json_file:
         json_data = json.load(json_file)
 #        print(json_data['Products'])
         prod_list = json_data['Products']
@@ -63,20 +64,20 @@ def sendhtmlemail():
             """
 #            print(email_content)
 
-            ownerDict = {"Expense": "shuang.he@oracle.com",
-                         "Billing": "shuang.he01@oracle.com",
-                         "Accounts Receivable": "shuang.he@oracle.com",
-                         "eBill Payment": "shuang.he@oracle.com",
-                         "Purchasing": "shuang.he@oracle.com",
-                         "Inventory": "shuang.he@oracle.com",
-                         "Mobile Inventory": "shuang.he@oracle.com",
+            ownerDict = {"Expense": "ally.yu@oracle.com",
+                         "Billing": "qi.dai@oracle.com",
+                         "Accounts Receivable": "yue.xu@oracle.com",
+                         "eBill Payment": "qi.dai@oracle.com",
+                         "Purchasing": "aifeng.shi@oracle.com",
+                         "Inventory": "xiuyi.du@oracle.com",
+                         "Mobile Inventory": "xiuyi.du@oracle.com",
                          "Order Management": "shuang.he@oracle.com",
-                         "Cost Management": "shuang.he@oracle.com",
-                         "Manufacturing": "shuang.he@oracle.com",
-                         "Supplier Scorecarding": "shuang.he@oracle.com", }
+                         "Cost Management": "changqin.he@oracle.com",
+                         "Manufacturing": "changqin.he@oracle.com",
+                         "Supplier Scorecarding": "changqin.he@oracle.com", }
 
             owneremails = []
-            if productsel == "*":
+            if productsel == "ALL":
                 owneremail = ownerDict[prod]
                 if owneremail != 'NULL':
                     owneremails += owneremail.split(',')
@@ -109,18 +110,22 @@ def sendhtmlemail():
     emails = list(set(emails))
     print emails
 
-    me = "shuang.he@oracle.com.com"
+    cf = ConfigParser.ConfigParser()
+    cf.read("config.conf")
+
+    # me = "shuang.he@oracle.com.com"
     #    you = "shuang.he@oracle.com"
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = 'UOW %s (BugNo %s) Related PTF Test has been selected' % (json_data['UOW'], json_data['BugNo'])
-    msg['From'] = me
+#    msg['From'] = me
+    msg['From'] = cf.get("mail_server", "From")
     msg['To'] = ','.join(emails)
 
     part1 = MIMEText(email_content, 'html')
     msg.attach(part1)
     s = smtplib.SMTP('ap6023fems.us.oracle.com')
-    s.sendmail(me, emails, msg.as_string())
+    s.sendmail(msg['From'], emails, msg.as_string())
     s.quit()
 
 
