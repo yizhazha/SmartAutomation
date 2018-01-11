@@ -15,24 +15,30 @@ set InstallPkg = "C:\SmartAutomation\Software"
 set PTFLogPath = "C:\SmartAutomation\PTF_Log"
 
 :start
-::ECHO Start to install Git - Ignore for slaves?
-::start /wait %InstallPkg%\Git-2.15.1.2-64-bit.exe /SILENT /norestart
-
-ECHO Start to copy/update PTF folder......
-if not exist "%PTFWrkPath%" md "%PTFWrkPath%"
-xcopy "%PTFSrcPath%\*.*" "%PTFWrkPath%" /s /h /d /c /y
-
-ECHO Start to copy/update PeopleTools folder
-if not exist "%PTWrkPath%" md "%PTWrkPath%"
-xcopy "%PTSrcPath%\*.*" "%PTWrkPath%" /s /h /d /c /y
-
+:Install Packages
 ECHO Download from master and copy to/update local installation package folder
 if not exist "%InstallPkg%" md "%InstallPkg%"
 xcopy "\\den00qhy.us.oracle.com\c$\SmartAutomation\Software\*.*"  "%InstallPkg%" /s /h /d /c /y
 
+goto PTF
+:Git
+ECHO Start to install Git - Ignore for slaves?
+start /wait %InstallPkg%\Git-2.15.1.2-64-bit.exe /SILENT /norestart
+
+:PTF
+ECHO Start to copy/update PTF folder......
+if not exist "%PTFWrkPath%" md "%PTFWrkPath%"
+xcopy "%PTFSrcPath%\*.*" "%PTFWrkPath%" /s /h /d /c /y
+
 ECHO Create PTF Log folder if not exist
 if not exist "%PTFLogPath%" md "%PTFLogPath%" 
 
+:PeopleTools
+ECHO Start to copy/update PeopleTools folder
+if not exist "%PTWrkPath%" md "%PTWrkPath%"
+xcopy "%PTSrcPath%\*.*" "%PTWrkPath%" /s /h /d /c /y
+
+:VC for PeopleTools
 ECHO Start to install VC so that pside.exe can work......
 cd\
 cd SmartAutomation
@@ -41,7 +47,27 @@ ECHO install VC x64 successfully......
 start /wait %InstallPkg%\vc_redist.x86.exe /q /norestart
 ECHO install VC x86 successfully......
 
-::Check if python2.7 is already installed. Continue to install silently if not installed and exit if else.
+goto python
+:java
+ECHO Start to install java x64......
+cd\
+cd SmartAutomation
+start /wait %InstallPkg%\jdk-8u151-windows-x64.exe /qn INSTALLDIR=C:\Java\jdk1.8
+echo jdk installed successfully
+
+set JAVA_HOME=C:\Java\jdk1.8
+set PATH=%PATH%;%%JAVA_HOME%%\bin;%%JAVA_HOME%%\jre\bin
+set CLASSPATH=.;%%JAVA_HOME%%\lib\dt.jar;%%JAVA_HOME%%\lib\tools.jar
+
+start /WAIT %InstallPkg%\jre-8u151-windows-x64.exe /s INSTALLDIR=C:\Java\jre
+echo jre installed successfully
+
+set JAVA_HOME=C:\Java
+set PATH=%PATH%;%%JAVA_HOME%%\jre\bin
+set CLASSPATH=.;%%JAVA_HOME%%\jre\lib
+
+:python
+::Check if python2.7 is already installed. Continue to install silently if not installed. Exit if else.
 ::Default folder is C:\python27
 ECHO Start to install python2.7 x64......
 cd\
