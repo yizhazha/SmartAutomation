@@ -12,6 +12,7 @@ set PTFWrkPath = "C:\Program Files\PeopleSoft\PeopleSoft Test Framework"
 set PTSrcPath  = "\\psbldfs\dfs\build\pt\ptship\pt85604d\install_Windows.ora"
 set PTWrkPath  = "C:\SmartAutomation\pt"
 set InstallPkg = "C:\SmartAutomation\Software"
+set PTFLogPath = "C:\SmartAutomation\PTF_Log"
 
 :start
 ::ECHO Start to install Git - Ignore for slaves?
@@ -28,6 +29,9 @@ xcopy "%PTSrcPath%\*.*" "%PTWrkPath%" /s /h /d /c /y
 ECHO Download from master and copy to/update local installation package folder
 if not exist "%InstallPkg%" md "%InstallPkg%"
 xcopy "\\den00qhy.us.oracle.com\c$\SmartAutomation\Software\*.*"  "%InstallPkg%" /s /h /d /c /y
+
+ECHO Create PTF Log folder if not exist
+if not exist "%PTFLogPath%" md "%PTFLogPath%" 
 
 ECHO Start to install VC so that pside.exe can work......
 cd\
