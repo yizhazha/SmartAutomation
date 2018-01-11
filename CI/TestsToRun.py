@@ -76,6 +76,7 @@ def run_ptf_tests(DB_name, server_port, exo, log_dir):
     for product in (json_data["Products"]):
         for test in (json_data[product]):
             #execute_str = test_framework + " -CD=" + DB_name + " -CS=" + server_port + " -CO=VP1 -CP=VP1 -TST=" + test["test_Name"] + " -CUA=TRUE -TC=" + test["test_Case"] + " -EXO=" + exo + " -LOG=" + log_dir + "\\"  + json_name[:-5] + "\\" + test["test_Name"] + ".xml"
+            os.system("if not exist " + log_dir + "\\"  + json_name[:-5] + " md " + log_dir + "\\"  + json_name[:-5])
             execute_str = test_framework + " -CS=" + server_port + " -CO=VP1 -CP=VP1 -TST=" + test["test_Name"] + " -CUA=TRUE -TC=" + test["test_Case"] + " -EXO=" + exo + " -LOG=" + log_dir + "\\"  + json_name[:-5] + "\\" + test["test_Name"] + ".xml"
             plan_list.append(test["test_Name"])
             ret = subprocess.call(execute_str, shell=True)
