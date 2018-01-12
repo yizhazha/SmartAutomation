@@ -11,14 +11,14 @@ set PTFSrcPath = "\\psbldfs\dfs\enterprise\PsTestFrameWork\856\PTF856_04D"
 set PTFWrkPath = "C:\Program Files\PeopleSoft\PeopleSoft Test Framework"
 set PTSrcPath  = "\\psbldfs\dfs\build\pt\ptship\pt85604d\install_Windows.ora"
 set PTWrkPath  = "C:\SmartAutomation\pt"
-set InstallPkg = "C:\SmartAutomation\Software"
+set InstallPkg = "C:\SmartAutomation\InstallPkg"
 set PTFLogPath = "C:\SmartAutomation\PTF_Log"
 
 :start
 :Install Packages
 ECHO Download from master and copy to/update local installation package folder
 if not exist "%InstallPkg%" md "%InstallPkg%"
-xcopy "\\den00qhy.us.oracle.com\c$\SmartAutomation\Software\*.*"  "%InstallPkg%" /s /h /d /c /y
+xcopy "\\den00qhy.us.oracle.com\c$\SmartAutomation\InstallPkg\*.*"  "%InstallPkg%" /s /h /d /c /y
 
 goto PTF
 :Git
