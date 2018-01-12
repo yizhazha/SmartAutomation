@@ -5,30 +5,37 @@
 '''
 import sys
 import os
-import FindJSON
+import re
+from FindJSON import get_JSONFile
 
-#uow = sys.argv[1]
-#exo = sys.argv[2]
-#email = sys.argv[3]
-#filePath = sys.argv[4]
-#URL = sys.argv[5]
+uow = sys.argv[1]
+exo = sys.argv[2]
+email = sys.argv[3]
+filePath = sys.argv[4]
+json = get_JSONFile(uow,exo,email,filePath)[:-5]
+pia = sys.argv[5]
+# a = """^http(s)?://slc\w{5}"""
+pattern = re.compile("""^http(s)?://slc\w{5}""")
+match = pattern.match(pia)
+URL = match.group()[-8:]
 
-def set_ExecutionOption(exo,hostName):
-    dms = file(os.getcwd()+"\setupExecOption.dms", "w+")
-    print dms
-    line1 = """SET LOG \\\psbldfs.us.oracle.com\dfs\enterprise\QEShare\QEO-Partner\DataMover_Scripts\setupExecOption.log;
+
+
+dms = file(os.getcwd()+"\setupExecOption.dms", "w+")
+print dms
+line1 = """SET LOG \\\psbldfs.us.oracle.com\dfs\enterprise\QEShare\QEO-Partner\DataMover_Scripts\setupExecOption.log;
 
     --ACTIVE THE PTTST_CONFIG_NO_SSL--
     UPDATE PSOPRVERDFN SET ACTIVE_FLAG = 'A' where IB_OPERATIONNAME = 'PTTST_CONFIG_NO_SSL';
     COMMIT;"""
-    dms.writelines(line1)
-    dms.writelines('\n')
-    line2 = """--Add Execution Option--
+dms.writelines(line1)
+dms.writelines('\n')
+line2 = """--Add Execution Option--
     delete from PSPTTSTOPTIONS where PTTST_EXOP_NAME = '%s';
     COMMIT;""" % exo
-    dms.writelines(line2)
-    dms.writelines('\n')
-    line3 = """Insert into PSPTTSTOPTIONS values (
+dms.writelines(line2)
+dms.writelines('\n')
+line3 = """Insert into PSPTTSTOPTIONS values (
             '%s',
             'N',
             'http://%s.us.oracle.com:8000/psp/%sx/?&cmd=login&languageCd=ENG',
@@ -60,37 +67,23 @@ def set_ExecutionOption(exo,hostName):
             'Y',
             'N'
         );
-    COMMIT;""" % (exo, hostName, exo.lower(), exo,json)
-    dms.writelines(line3)
-    dms.writelines('\n')
-    line4 = """delete from PSPTTSTOPT_URL where PTTST_EXOP_NAME = '%s';
+    COMMIT;""" % (exo, URL, exo.lower(), exo,json)
+dms.writelines(line3)
+dms.writelines('\n')
+line4 = """delete from PSPTTSTOPT_URL where PTTST_EXOP_NAME = '%s';
     COMMIT;""" % exo
-    dms.writelines(line4)
-    dms.writelines('\n')
-    line5 = """Insert into PSPTTSTOPT_URL values (
+dms.writelines(line4)
+dms.writelines('\n')
+line5 = """Insert into PSPTTSTOPT_URL values (
             '%s',
             'PORTAL',
             'http://%s.us.oracle.com:8000/psc/%sx/EMPLOYEE/ERP/'
         );
-    COMMIT;""" % (exo, hostName, exo.lower())
-    dms.writelines(line5)
+    COMMIT;""" % (exo, URL, exo.lower())
+dms.writelines(line5)
 
-##script, uow, exo, email, filePath, URL = sys.argv
 
-uow = sys.argv[1]
-exo = sys.argv[2]
-email = sys.argv[3]
-filePath = sys.argv[4]
-URL = sys.argv[5]
 
-hostName = URL.split['.'][0].split('//')[1]
-
-json = FindJSON.get_JSONFile(uow,exo,email,filePath)[:-5]
-
-set_ExecutionOption(exo,hostName)
-
-if __name__ == '__main__':
-    set_ExecutionOption(exo,hostName)
 
 
 
