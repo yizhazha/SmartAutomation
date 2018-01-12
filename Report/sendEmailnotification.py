@@ -9,11 +9,13 @@ import ConfigParser
 
 
 def sendhtmlemail():
-
-    productsel=sys.argv[5]
-
-    jsonfname = FindJSON.json_name
+    uow = sys.argv[1]
+    exo = sys.argv[2]
+    email = sys.argv[3]
     filepath = sys.argv[4]
+    productsel = sys.argv[5]
+
+    jsonfname = FindJSON.get_JSONFile(uow,exo,email,filepath)
     requester = sys.argv[3]
     jsonfpath = os.path.join(filepath, jsonfname)
     jsonfullpath = jsonfpath
