@@ -8,6 +8,10 @@ from optparse import OptionParser
 logging.basicConfig(format='%(asctime)s-%(process)d-%(levelname)s: %(message)s')
 log = logging.getLogger('result_analysis')
 log.setLevel(logging.DEBUG)
+import FindJSON
+
+
+
 '''
 # get folder name by timestamp MMddYY
 folder_name = datetime.datetime.now().strftime("%Y%m%d")
@@ -27,17 +31,17 @@ HTMLOUTPUT = SOURCE_DIR + folder_name + "/result.html"
 '''
 class GlobalParameters:
 
-    def __init__(self, source_dir="", folder_name="", file_name=""):
-        self.source_dir = source_dir
-        self.folder_name = folder_name
+    def __init__(self, log_folder="", file_name=""):
+        #self.source_dir = source_dir
+        self.log_folder = log_folder
         self.file_name = file_name
 
         #self.log_dir = "%s%s\%s"%(self.source_dir,self.folder_name,self.file_name)
-        self.log_dir = self.source_dir + self.folder_name + '/'+self.file_name
-        self.result_xml = "%s%s\\report\\result.xml"%(self.source_dir,self.folder_name)
-        self.output = "%s\%s\\report\\output.xml"%(self.source_dir,self.folder_name)
-        self.html_output = "%s\%s\\report\\result.html"%(self.source_dir,self.folder_name)
-        self.report_folder = "%s%s\\report\\"%(self.source_dir,self.folder_name)
+        self.log_dir = self.log_folder + '\\'+self.file_name
+        self.result_xml = "%s\\report\\result.xml"%(self.log_folder)
+        self.output = "%s\\report\\output.xml"%(self.log_folder)
+        self.html_output = "%s\\report\\result.html"%(self.log_folder)
+        self.report_folder = "%s\\report\\"%(self.log_folder)
 
 
 MAX = 9999999999
@@ -207,6 +211,8 @@ class LogExport():
 
 def convertXMLToJson(path):
     f = open(path, 'r')
+    #g = open("D:/test/log/84077_E92BISD2_daiqi@oracle.com_201712252030/84077_E92BISD2_daiqi@oracle.com.xml")
+    #doc1 = xmltodict.parse(g)
     doc = xmltodict.parse(f)
     return json.loads(json.dumps(doc))
 
@@ -250,7 +256,7 @@ def mapStepToTestCase(testCaseList, steps):
 def caseParser(file):
     # convert xml to json
     jObj = convertXMLToJson(file)
-    # print(jObj)
+    print(jObj)
     param = Param(jObj)
     loginfo = LogExport(jObj["execution"]["LogExport"])
     testsuite = TestSuite(jObj["execution"]["Started"], param, loginfo, jObj["execution"]["Status"], file)
@@ -399,29 +405,38 @@ def generateHTMLReport(testResult,g_para):
 
 if __name__ == "__main__":
 
+#    cf = ConfigParser.ConfigParser()
+ #   cf.read("config.conf")
+ #   source_dir = cf.get("source_dir","LOGDIR")
+
     # get the input
     usage = "usage: python -T <tag> -P <log path> "
     parser = OptionParser(usage=usage, epilog="")
-    parser.add_option("-F", "--folder", type="string", help="folder name", default="staging")
-    parser.add_option("-S", "--path", type="string", help="source folder name", default="staging")
+    parser.add_option("-U","--UOW", type="string", help="UOW number", default="staging")
+    parser.add_option("-D", "--DB", type="string", help="DB name", default="staging")
+    parser.add_option("-E", "--Email", type="string", help="Emial info", default="staging")
+    parser.add_option("-F", "--FolderPath", type="string", help="log folder name", default="staging")
+#    parser.add_option("-P", "--Product", type="string", help="Product", default="staging")
+
+#    parser.add_option("-F", "--folder", type="string", help="folder name", default="staging")
+#    parser.add_option("-S", "--path", type="string", help="source folder name", default="staging")
     (options, args) = parser.parse_args()
+
 
     #read config file
     #folder_name = datetime.datetime.now().strftime("%Y%m%d")
-    source_dir = parser.values.path
-    folder_name = parser.values.folder
-    temp_info = folder_name.split("_")
-    UOW_id = temp_info[0]
-    DB_info = temp_info[1]
-    email_info = temp_info[2]
-    date_info = temp_info[3]
+    UOW_id = parser.values.UOW
+    DB_info = parser.values.DB
+    email_info = parser.values.Email
+    source_dir = parser.values.FolderPath
+
+    json_filename = FindJSON.get_JSONFile(UOW_id, DB_info, email_info, source_dir)
+    log_folder = source_dir + os.sep + json_filename
+
     file_name = UOW_id+"_"+DB_info+"_"+email_info+".xml"
 
-    cf = ConfigParser.ConfigParser()
-    cf.read("config.conf")
-
     #init g_para
-    g_para = GlobalParameters(source_dir,folder_name, file_name)
+    g_para = GlobalParameters(log_folder, file_name)
 
  #   log.info("---------------------------Parameters-------------------------------------")
 #    log.info("file name:     " + options.file)
@@ -438,7 +453,6 @@ if __name__ == "__main__":
     testResult = TestResult()
     '''
     # loop all the test result in the folder
-
     files = os.listdir(g_para.log_dir)
     for file in files:
         if "xml" in file.split("."):
@@ -452,4 +466,3 @@ if __name__ == "__main__":
     testsuite = caseParser(g_para.log_dir)
     testResult.addTestSuite(testsuite)
     generateHTMLReport(testResult, g_para)
-    #  os.system('mutt -e ' + '"set content_type=text/html"' + " -s" + ' "Results of Automated Testing"' + " -c" + " " + "nina.zhao@oracle.com" + " " + "nina.zhao@oracle.com" + " < result")
