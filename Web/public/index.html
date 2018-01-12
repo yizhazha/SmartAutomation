@@ -21,6 +21,7 @@
                     </td>
                     <td>
                         <select name="Product" form="autoform">
+                            <option value="ALL">All Products</option>
                             <option value="Expenses">Expenses</option>
                             <option value="Inventory">Inventory</option>
                             <option value="Mobile Inventory">Mobile Inventory</option>
@@ -33,7 +34,6 @@
                             <option value="Purchasing">Purchasing</option>
                             <option value="Accounts Receivable">Accounts Receivable</option>
                             <option value="General Ledger">General Ledger</option>
-                            <option value="ALL">All Products</option>
                         </select>
                     </td>
                 </tr>
@@ -43,7 +43,7 @@
                         <label for="">UOW</label>
                     </td>
                     <td>
-                        <input type="text" name="UOW" placeholder="Please Enter UOW" autofocus autocomplete="on">
+                        <input type="text" name="UOW" placeholder="Please Enter UOW" autofocus autocomplete="on" required ="required">
                     </td>
                 </tr>
 
@@ -52,7 +52,7 @@
                         <label for="">DB URL</label>
                     </td>
                     <td>
-                        <input type="text" name="Database" placeholder="Please Enter DB URL">
+                        <input type="text" name="Database" placeholder="Please Enter DB URL" required ="required">
                     </td>
                 </tr>
 
@@ -61,7 +61,7 @@
                         <label for="">Email</label>
                     </td>
                     <td>
-                        <input type="text" name="Email" placeholder="Please Enter Your Email">
+                        <input type="text" name="Email" placeholder="Please Enter Your Email" required ="required">
                     </td>
                 </tr>
 
