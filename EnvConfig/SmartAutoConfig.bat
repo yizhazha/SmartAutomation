@@ -14,7 +14,6 @@ set PTFLogPath = "C:\SmartAutomation\PTF_Log"
 set JenJobPath = "C:\Temp\workspace\Env_GitDownload" 
 
 :start
-set SARootPath = "C:\SmartAutomation"
 set ScriptPath = "%SARootPath%\Scripts"
 set InstallPkg = "%SARootPath%\InstallPkg"
 set PTFLogPath = "%SARootPath%\PTF_Log"
