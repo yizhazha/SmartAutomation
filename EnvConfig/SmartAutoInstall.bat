@@ -7,12 +7,12 @@ ECHO.
 
 goto start
 ::Parameter examples. Path with blank space should be quoted with "" to avoid errors
-set PTFSrcPath = "\\psbldfs\dfs\enterprise\PsTestFrameWork\856\PTF856_04D"
-set PTFWrkPath = "C:\Program Files\PeopleSoft\PeopleSoft Test Framework"
-set PTSrcPath  = "\\psbldfs\dfs\build\pt\ptship\pt85604d\install_Windows.ora"
-set PTWrkPath  = "C:\SmartAutomation\pt"
-set InstallPkg = "C:\SmartAutomation\InstallPkg"
-set PTFLogPath = "C:\SmartAutomation\PTF_Log"
+set PTFSrcPath="\\psbldfs\dfs\enterprise\PsTestFrameWork\856\PTF856_04D"
+set PTFWrkPath="C:\Program Files\PeopleSoft\PeopleSoft Test Framework"
+set PTSrcPath="\\psbldfs\dfs\build\pt\ptship\pt85604d\install_Windows.ora"
+set PTWrkPath="C:\SmartAutomation\pt"
+set InstallPkg="C:\SmartAutomation\InstallPkg"
+set PTFLogPath="C:\SmartAutomation\PTF_Log"
 
 :start
 :Install Packages

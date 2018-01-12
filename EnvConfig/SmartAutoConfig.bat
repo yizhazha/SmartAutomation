@@ -1,23 +1,10 @@
-::auto install
+::auto config
 
-:Initialize
-CLS
-@ECHO OFF
-ECHO.
-
-goto start
-::Parameter examples. Path with blank space should be quoted with "" to avoid errors
-set SARootPath="C:\SmartAutomation"
-set ScriptPath="C:\SmartAutomation\Scripts"
-set InstallPkg="C:\SmartAutomation\InstallPkg"
-set PTFLogPath="C:\SmartAutomation\PTF_Log"
-set JenJobPath="C:\Temp\workspace\Env_GitDownload" 
-
-:start
+::set SARootPath="C:\SmartAutomation"
 set ScriptPath="%SARootPath%\Scripts"
 set InstallPkg="%SARootPath%\InstallPkg"
 set PTFLogPath="%SARootPath%\PTF_Log"
-set JenJobPath="C:\Temp\workspace\Env_GitDownload" 
+set JenJobPath="C:\Temp\workspace\Env_GitDownload"
 if not exist %SARootPath% md %SARootPath%
 if not exist %ScriptPath% md %ScriptPath%
 if not exist %InstallPkg% md %InstallPkg%
