@@ -49,7 +49,7 @@ fp.close()
 # productsel= cfe.get("products","product")
 
 #Define the default product owner
-ownerDict={"Expense": "ally.yu@oracle.com",
+ownerDict={"Expenses": "ally.yu@oracle.com",
            "Billing": "qi.dai@oracle.com",
            "Accounts Receivable": "yue.xu@oracle.com",
            "eBill Payment": "qi.dai@oracle.com",

@@ -66,7 +66,7 @@ def sendhtmlemail():
             """
 #            print(email_content)
 
-            ownerDict = {"Expense": "ally.yu@oracle.com",
+            ownerDict = {"Expenses": "ally.yu@oracle.com",
                          "Billing": "qi.dai@oracle.com",
                          "Accounts Receivable": "yue.xu@oracle.com",
                          "eBill Payment": "qi.dai@oracle.com",
