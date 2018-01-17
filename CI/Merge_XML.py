@@ -36,10 +36,10 @@ def createHeader(startedTime):
     ET.SubElement(root, "Started").text = startedTime.strftime('%Y-%m-%d %H:%M:%S')
     CE = ET.SubElement(root, "Param")
 
-    ET.SubElement(CE, "Database").text = "DB"
+    ET.SubElement(CE, "Database").text = DB_name
     ET.SubElement(CE, "TestName").text = DUMMY_SHELL
     ET.SubElement(CE, "TestCase").text = "DEFAULT"
-    ET.SubElement(CE, "ExecOpt").text = "DB"
+    ET.SubElement(CE, "ExecOpt").text = exo
     ET.SubElement(root, "Status")
     ET.SubElement(root, "Test")
 
