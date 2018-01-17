@@ -137,4 +137,4 @@ for index in range(len(filesList)):
 createFooter(root, LOGDIR)
 indent(root)
 tree = ET.ElementTree(root)
-tree.write(LOGDIR+DUMMY_XML)
+tree.write(LOGDIR + "/" + DUMMY_XML)
