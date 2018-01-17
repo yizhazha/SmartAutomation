@@ -110,13 +110,11 @@ DB_name = sys.argv[3]
 email = sys.argv[4]
 log_dir = sys.argv[5]
 filePath = sys.argv[6]
-##LOGPATH = sys.argv[7]
 
 #Get JSON file name, including extension
 json_name = FindJSON.get_JSONFile(uow, exo, email, filePath)
 
 LOGDIR = log_dir + os.sep + json_name[:-5]
-#LOGPATH = "C:\SmartAutomation"
 SOURCE_XML = LOGDIR + "/*.xml"
 DUMMY_SHELL = uow + "_" + DB_name + "_" + email
 DUMMY_XML = DUMMY_SHELL + ".xml"
@@ -139,4 +137,4 @@ for index in range(len(filesList)):
 createFooter(root, LOGDIR)
 indent(root)
 tree = ET.ElementTree(root)
-tree.write(DUMMY_XML)
+tree.write(LOGDIR+DUMMY_XML)
