@@ -102,7 +102,7 @@ def insertDummyXML(targetNode,singleInfo,execSeq,flag):
 #if __name__ == "__main__":
 
 #Start below:
-##script, uow, exo, DB_name, email, log_dir, filePath, LOGPATH = sys.argv
+##script, uow, exo, DB_name, email, log_dir, filePath = sys.argv
 
 uow = sys.argv[1]
 exo = sys.argv[2]
@@ -110,7 +110,7 @@ DB_name = sys.argv[3]
 email = sys.argv[4]
 log_dir = sys.argv[5]
 filePath = sys.argv[6]
-LOGPATH = sys.argv[7]
+##LOGPATH = sys.argv[7]
 
 #Get JSON file name, including extension
 json_name = FindJSON.get_JSONFile(uow, exo, email, filePath)
@@ -136,7 +136,7 @@ for index in range(len(filesList)):
         flag = "p"
     insertDummyXML(TestNode,singleInfo,index +1, flag)
 
-createFooter(root, LOGPATH)
+createFooter(root, LOGDIR)
 indent(root)
 tree = ET.ElementTree(root)
 tree.write(DUMMY_XML)
