@@ -1,4 +1,6 @@
-::auto config
+::This file is used to create working directory structure on slaves for SmartAutomation project
+::Please run it before run SmartAutomation project
+::Author: fangfang.jiang@oracle.com
 
 :Initialize
 CLS
@@ -19,6 +21,9 @@ if not exist %ScriptPath% md %ScriptPath%
 
 echo create install packages folder if not exist
 if not exist %InstallPkg% md %InstallPkg%
+
+ECHO Create PTF Log folder if not exist
+if not exist "%PTFLogPath%" md "%PTFLogPath%"
 
 echo copy git downloaded EnvConfig scripts to working scripts folder
 xcopy "%JenJobPath%\EnvConfig" %ScriptPath% /s /h /d /c /y

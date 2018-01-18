@@ -1,4 +1,6 @@
-::auto install
+::This file is used to auto download install packages from master and install related software for SmartAutomation project
+::Please run it when set up a new slave for SmartAutomation project
+::Author: fangfang.jiang@oracle.com
 
 :Initialize
 CLS
@@ -29,9 +31,6 @@ start /wait %InstallPkg%\Git-2.15.1.2-64-bit.exe /SILENT /norestart
 ECHO Start to copy/update PTF folder......
 if not exist "%PTFWrkPath%" md "%PTFWrkPath%"
 xcopy "%PTFSrcPath%\*.*" "%PTFWrkPath%" /s /h /d /c /y
-
-ECHO Create PTF Log folder if not exist
-if not exist "%PTFLogPath%" md "%PTFLogPath%" 
 
 :PeopleTools
 ECHO Start to copy/update PeopleTools folder
