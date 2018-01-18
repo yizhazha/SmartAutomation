@@ -14,6 +14,9 @@
 # Notice: Any path should not incldue SPACE.
 #-------------------------------------------------------------------------------
 
+#!/usr/bin/python
+# -*- coding UTF-8 -*-
+
 import os
 import re
 import sys
@@ -85,7 +88,7 @@ def run_ptf_tests(DB_name, server_port, exo, log_dir):
             else:
                 print("%s executed successfully." % (execute_str))
 
-    exec_lists = os.listdir(log_dir)
+    exec_lists = os.listdir(log_dir + os.sep + json_name[:-5])
     for logxml in exec_lists:
         #log = logxml.split(".")
         log = os.path.splitext(logxml)
