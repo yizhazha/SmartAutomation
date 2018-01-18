@@ -74,8 +74,8 @@ def indent(elem, level=0):
 
 def getSingleInfo(file):
     r = ET.parse(os.path.join(LOGDIR, file)).getroot()
-    testName = r[1][1].text
-    testCase = r[1][2].text
+    testName = r[1][2].text
+    testCase = r[1][3].text
     status = r.find("Status").text
 
     if status == "Failed":
