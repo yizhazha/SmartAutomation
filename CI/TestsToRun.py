@@ -195,6 +195,7 @@ proj_name='PTF_TEST'+str(time.strftime('%Y%m%d%H%M%S'))
 copytoprjcmd = "%s -HIDE -PJTF %s -FP c:\\temp\\export -CT ORACLE -CD %s -CO %s -CP %s -QUIET -LF c:\\temp\\copytofile.log" % (ps_tool_path,proj_name,db_name,User_ID,User_Password)
 copyfromprjcmd = "%s -HIDE -PJFF %s -FP c:\\temp\\export -CT ORACLE -CD %s -CO %s -CP %s -QUIET -LF c:\\temp\\copyfromfile.log" % (t_ps_tool_path,proj_name,t_db_name,t_User_ID,t_User_Password)
 
+os.system("taskkill /f /im pside.exe") ##fajiang: kill existing window
 test_list = get_all_test(tests)
 app = application.Application()
 app.start(ps_tool_path)
