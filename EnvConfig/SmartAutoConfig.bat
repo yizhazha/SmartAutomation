@@ -1,5 +1,10 @@
 ::auto config
 
+:Initialize
+CLS
+@ECHO OFF
+ECHO.
+
 ::set SARootPath="C:\SmartAutomation"
 set ScriptPath="%SARootPath%\Scripts"
 set InstallPkg="%SARootPath%\InstallPkg"
