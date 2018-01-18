@@ -36,7 +36,7 @@ xcopy "\\den00qhy.us.oracle.com\C$\SmartAutomation\Scripts\SmartAnalyze.jar" %Sc
 xcopy "%JenJobPath%\AnalyzeUOW\DB_Util.ini" %ScriptPath% /s /h /d /c /y
 xcopy "%JenJobPath%\AnalyzeUOW\log4j2-test.xml" %ScriptPath% /s /h /d /c /y
 if not exist %ScriptPath%\lib md %ScriptPath%\lib
-xcopy "%JenJobPath%\AnalyzeUOW\lib" %ScriptPath% /s /h /d /c /y
+xcopy "%JenJobPath%\AnalyzeUOW\lib" %ScriptPath%\lib /s /h /d /c /y
 
 echo copy git downloaded Execution scripts to working scripts folder
 xcopy "%JenJobPath%\Execution" %ScriptPath% /s /h /d /c /y
