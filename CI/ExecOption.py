@@ -19,10 +19,9 @@ pattern = re.compile("""^http(s)?://slc\w{5}""")
 match = pattern.match(pia)
 URL = match.group()[-8:]
 
-
-
 dms = file(os.getcwd()+"\setupExecOption.dms", "w+")
 print dms
+
 line1 = """SET LOG \\\psbldfs.us.oracle.com\dfs\enterprise\QEShare\QEO-Partner\DataMover_Scripts\setupExecOption.log;
 
     --ACTIVE THE PTTST_CONFIG_NO_SSL--
@@ -82,7 +81,9 @@ line5 = """Insert into PSPTTSTOPT_URL values (
     COMMIT;""" % (exo, URL, exo.lower())
 dms.writelines(line5)
 
-
+print "###################################################################"
+print "Generate dms file successfully. Prepared for set Exectuion Options."
+print "###################################################################"
 
 
 

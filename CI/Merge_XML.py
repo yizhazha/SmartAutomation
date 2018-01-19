@@ -138,3 +138,7 @@ createFooter(root, LOGDIR)
 indent(root)
 tree = ET.ElementTree(root)
 tree.write(LOGDIR + os.sep + DUMMY_XML)
+print "###############################################################################"
+print "Generate XML log file successfully under: " + LOGDIR
+print "XML log file name: " + DUMMY_XML
+print "###############################################################################"
