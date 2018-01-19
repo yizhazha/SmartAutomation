@@ -32,7 +32,7 @@ echo copy git downloaded CI scripts to working scripts folder
 xcopy "%JenJobPath%\CI"        %ScriptPath% /s /h /d /c /y
 
 echo copy git downloaded Calculation scripts to working scripts folder
-xcopy "\\den00qhy.us.oracle.com\C$\SmartAutomation\Scripts\SmartAnalyze.jar" %ScriptPath% /s /h /d /c /y
+xcopy "%JenJobPath%\SmartAnalyze.jar" %ScriptPath% /s /h /d /c /y
 xcopy "%JenJobPath%\AnalyzeUOW\DB_Util.ini" %ScriptPath% /s /h /d /c /y
 xcopy "%JenJobPath%\AnalyzeUOW\log4j2-test.xml" %ScriptPath% /s /h /d /c /y
 xcopy "%JenJobPath%\AnalyzeUOW\prodSetup.ini" %ScriptPath% /s /h /d /c /y
