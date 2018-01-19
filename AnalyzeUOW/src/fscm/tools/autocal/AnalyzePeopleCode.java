@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -105,13 +106,16 @@ public class AnalyzePeopleCode {
 						log.info("Object " + i + ": [Application Engine][" + value1 + "]");
 						cand_ae.add(value1);
 					}
-
+					if (type == 55) {
+						log.info("Object " + i + ": [Portal Registry Structure][" + value1 + "]");
+						computePortalDependency(mol.get(i));
+					}
 					if (type == 58) {
-						log.info("Object " + i + ": [Application Package][" + value1 + "]");
-						computePackageDependency(mol.get(i));
+						log.info("Object " + i + ": [Application Package PeopleCode][" + value1 + "]["+value2+"]");
+						computeAppPackageDependency(mol.get(i));
 					}
 					if (type == 68) {
-						computeFileRefDependency(testdb, mol.get(i));
+						computeFileRefDependency(mol.get(i));
 						log.info("Object " + i + ": [File Reference][" + value1 + "]");
 					}
 
@@ -158,10 +162,47 @@ public class AnalyzePeopleCode {
 		}
 	}
 
+	void computePortalDependency(ModifiedObject mo) {
+		StringBuilder sql = new StringBuilder();
+		String portal = mo.getObjValue1().trim();
+		String type = mo.getObjValue2().trim();
+		String objName = mo.getObjValue3().trim();
+
+		if (portal.equals("") || type.equals("") || objName.equals(""))
+			return;
+
+		if (type.equals("C")) {
+			sql.append("SELECT distinct PORTAL_URI_SEG2 FROM PSPRSMDEFN where PORTAL_REFTYPE='C' AND PORTAL_NAME='");
+			sql.append(portal);
+			sql.append("' AND PORTAL_OBJNAME = '");
+			sql.append(objName + "'");
+			log.trace(sql);
+
+			try {
+				DBUtil db = new DBUtil(new DBInfo("TESTDB"));
+				ResultSet rs = db.getQueryResult(sql.toString());
+				List<String> temp = new LinkedList<String>();
+				String comp = "";
+				while (rs.next()) {
+					comp = rs.getString("PORTAL_URI_SEG2").trim();
+					if (!comp.equals(""))
+						temp.add(comp);
+				}
+				if (temp.size() > 0)
+					cand_comp.addAll(temp);
+				db.closeConnection();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+
+	}
+
 	void computeMenuDependency(DBUtil testdb, String value1) {
 		cand_menu.add(value1);
 		List<String> temp = new ArrayList<String>();
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT distinct MENUNAME From PSMENUITEM where menuname='");
 		sql.append(value1);
 		sql.append("' OR ITEMNAME='");
@@ -216,7 +257,7 @@ public class AnalyzePeopleCode {
 		ResultSet rs2 = null;
 		cand_rec.add(recname);
 		try {
-			// 1.Find Record Definition
+			
 			sql.append("select rectype, parentrecname from psrecdefn where recname='");
 			sql.append(recname);
 			sql.append("'");
@@ -232,7 +273,7 @@ public class AnalyzePeopleCode {
 					findPCRefByRecord(testdb, parent);
 				}
 
-				// if it's temp table, find AE
+				// temp table, find AE
 				if (recType == 7) {
 					sql.delete(0, sql.length());
 					sql.append(
@@ -273,11 +314,11 @@ public class AnalyzePeopleCode {
 				fieldList = getPageFieldByRecord(testdb, recname);
 				log.debug("[Record][" + recname + "] is used in Page Field: " + fieldList.size());
 				cand_field.addAll(fieldList);
-				// Find PC Reference Table: get all Record call this record
+				// Find PC Reference Table
 				findPCRefByRecord(testdb, recname);
 				compList = findCompByRecord(testdb, recname);
 				cand_comp.addAll(compList);
-				log.debug("[Record][" + recname + "] is used as " + compList.size() + " Add_Search in Component. ");
+				log.debug("________[Record][" + recname + "] is used as " + compList.size() + " Add_Search in Component. ");
 			} else {
 				log.warn("[Error]: Can't Find this Record's Definition: " + recname);
 			}
@@ -335,7 +376,7 @@ public class AnalyzePeopleCode {
 				while (rs2.next()) {
 					temp.add(rs2.getString("AE_APPLID"));
 				}
-				log.debug("[Record][" + recname + "] is used in " + temp.size() + " AE: " + temp.toString());
+				log.debug("________[Record][" + recname + "] is used in " + temp.size() + " AE: " + temp.toString());
 				aeList.addAll(temp);
 				cand_ae.addAll(aeList);
 
@@ -358,11 +399,11 @@ public class AnalyzePeopleCode {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		log.debug("[Field][" + value1 + "] is used in Page Field: " + fieldList.size());
+		log.debug("________[Field][" + value1 + "] is used in Page Field: " + fieldList.size());
 		cand_field.addAll(fieldList);
 	}
 
-	void computePackageDependency(ModifiedObject mo) {
+	void computeAppPackageDependency(ModifiedObject mo) {
 
 		List<PageRecordField> fieldList = new ArrayList<PageRecordField>();
 		String pck_root = mo.getObjValue1();
@@ -372,23 +413,35 @@ public class AnalyzePeopleCode {
 		String recname = "";
 
 		String app_path = "";
-		if (!mo.getObjValue4().trim().equals("")) {
+		if (!mo.getObjValue4().trim().equals("")) {			
 			app_path = mo.getObjValue2() + ":" + mo.getObjValue3();
 			refName = mo.getObjValue4().trim().toUpperCase();
-		} else if (!mo.getObjValue3().trim().equals("")) {
+		} else if (!mo.getObjValue3().trim().equals("")) {			
 			app_path = mo.getObjValue2();
 			refName = mo.getObjValue3().trim().toUpperCase();
+		}
+		else if (!mo.getObjValue2().trim().equals("")){
+			app_path="";
+			refName=mo.getObjValue2().toUpperCase();
+		}
+		else {
+			app_path="";
+			refName=mo.getObjValue1().toUpperCase();
 		}
 
 		StringBuilder sql = new StringBuilder();
 		sql.append(
 				"SELECT distinct OBJECTID1,OBJECTVALUE1, OBJECTID2, OBJECTVALUE2,OBJECTID3,OBJECTVALUE3,OBJECTID4,OBJECTVALUE4 FROM PSPCMNAME WHERE PACKAGEROOT='");
 		sql.append(pck_root);
+		
 		if (!app_path.equals("")) {
-			sql.append("' AND QUALIFYPATH = '");
-			sql.append(app_path);
+			sql.append("' AND QUALIFYPATH = '"+app_path+"'");			
 		}
-		sql.append("' AND REFNAME like '" + refName + "'  ORDER BY OBJECTID1");
+		else
+		{
+			sql.append("' AND trim(QUALIFYPATH) is null");
+		}
+		sql.append(" AND REFNAME like '" + refName + "'  ORDER BY OBJECTID1");
 
 		try {
 			DBUtil db = new DBUtil(new DBInfo("TESTDB"));
@@ -415,63 +468,94 @@ public class AnalyzePeopleCode {
 					field.setPage("%");
 					fieldList.add(field);
 				}
-				if (id1 == 104) {
-					if (rs.getString("OBJECTVALUE1").trim().equals(mo.getObjValue1().trim())
-							&& (rs.getString("OBJECTVALUE2").trim().equals(mo.getObjValue2().trim()))
-							&& (rs.getString("OBJECTVALUE3").trim().equals(mo.getObjValue3().trim())))
-						;
-
-					else {
-						// String appClass=rs.getString("OBJECTVALUE2").trim();
-						ModifiedObject pMO = new ModifiedObject();
-						pMO.setObjValue1(rs.getString("OBJECTVALUE1").trim());
-						pMO.setObjValue2(rs.getInt("OBJECTID2") > 104 ? rs.getString("OBJECTVALUE2").trim() : "");
-						pMO.setObjValue3(rs.getInt("OBJECTID3") > 104 ? rs.getString("OBJECTVALUE3").trim() : "");
-						pMO.setObjValue4(rs.getInt("OBJECTID4") > 104 ? rs.getString("OBJECTVALUE4").trim() : "");
-						computePackageDependency(pMO);
+				if (id1 == 104) {					
+/*					ModifiedObject pMO = new ModifiedObject();
+					if(rs.getInt("OBJECTID2")==107) {
+						if (rs.getString("OBJECTVALUE1").trim().equals(mo.getObjValue1().trim())
+								&& (rs.getString("OBJECTVALUE2").trim().equals(mo.getObjValue2().trim())))
+							;
+						else {
+							pMO.setObjValue1(rs.getString("OBJECTVALUE1").trim());
+							pMO.setObjValue2(rs.getString("OBJECTVALUE2").trim());
+							computePackageDependency(pMO);
+						}					
 					}
-				}
+					
+					if(rs.getInt("OBJECTID3")==107) {
+						if (rs.getString("OBJECTVALUE1").trim().equals(mo.getObjValue1().trim())
+								&& (rs.getString("OBJECTVALUE2").trim().equals(mo.getObjValue2().trim()))
+								&& (rs.getString("OBJECTVALUE3").trim().equals(mo.getObjValue3().trim())))
+							;
+
+						else {							
+							pMO.setObjValue1(rs.getString("OBJECTVALUE1").trim());
+							pMO.setObjValue2(rs.getString("OBJECTVALUE2").trim());
+							pMO.setObjValue3(rs.getString("OBJECTVALUE3").trim());
+							computePackageDependency(pMO);
+						}			
+					}
+					
+					if(rs.getInt("OBJECTID4")==107) {
+						if (rs.getString("OBJECTVALUE1").trim().equals(mo.getObjValue1().trim())
+								&& (rs.getString("OBJECTVALUE2").trim().equals(mo.getObjValue2().trim()))
+								&& (rs.getString("OBJECTVALUE3").trim().equals(mo.getObjValue3().trim()))
+								&& (rs.getString("OBJECTVALUE4").trim().equals(mo.getObjValue4().trim())))
+							;
+
+						else {							
+							pMO.setObjValue1(rs.getString("OBJECTVALUE1").trim());
+							pMO.setObjValue2(rs.getString("OBJECTVALUE2").trim());
+							pMO.setObjValue3(rs.getString("OBJECTVALUE3").trim());
+							pMO.setObjValue4(rs.getString("OBJECTVALUE4").trim());
+							computePackageDependency(pMO);
+						}							
+					}		*/
+					}			
 			}
 			db.closeConnection();
 		} catch (
-
 		Exception e) {
 			e.printStackTrace();
 		}
 		cand_field.addAll(fieldList);
-		log.debug("[Record][" + recname + "] is used in PeopleCode: " + fieldList.size());
+		log.debug("________[Package][" + pck_root + "][" + refName + "] is used in PeopleCode: " + fieldList.size());
 	}
 
-	void computeFileRefDependency(DBUtil testdb, ModifiedObject mo) {
+	void computeFileRefDependency(ModifiedObject mo) {
 
 		List<String> aeList = new LinkedList<String>();
 
 		String value2 = mo.getObjValue2();
 		String prcs = mo.getObjValue1();
+		String prcs_type = "";
 
-		if (value2.equals("SQR"))
+		if (value2.equals("SQR")) {
 			prcs = prcs.substring(0, prcs.indexOf("_SQ"));
-		if (value2.equals("COBOL"))
+			prcs_type = "SQR%";
+		} else if (value2.equals("COBOL")) {
 			prcs = prcs.substring(0, prcs.indexOf("_CBL"));
-		else {
-			log.debug("[File Reference][" + mo.getObjValue1() + "] is used in PeopleCode: 0");
+			prcs_type = "COBOL%";
+		} else {
+			log.debug("________[File Reference][" + mo.getObjValue1() + "] is used in PeopleCode: 0");
 			return;
 		}
 		try {
+			DBUtil testdb = new DBUtil(new DBInfo("TESTDB"));
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT DISTINCT PRCSNAME FROM PS_PRCSDEFN WHERE PRCSTYPE='SQR Process' AND PRCSNAME='" + prcs
-					+ "'");
+			sql.append("SELECT DISTINCT PRCSNAME FROM PS_PRCSDEFN WHERE PRCSTYPE LIKE '" + prcs_type
+					+ "' AND PRCSNAME='" + prcs + "'");
 			ResultSet rs = testdb.getQueryResult(sql.toString());
 			while (rs.next()) {
 				prcs = rs.getString("PRCSNAME");
 				aeList.add(prcs);
 			}
-		} catch (SQLException e) {
+			testdb.closeConnection();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		cand_ae.addAll(aeList);
-		log.debug("[File Ference][" + mo.getObjValue1() + "] is used in PeopleCode: " + aeList.size());
+		log.debug("________[File Ference][" + mo.getObjValue1() + "] is used in PeopleCode: " + aeList.size());
 	}
 
 	List<PageRecordField> getPageFieldByField(DBUtil testdb, String fieldname) throws SQLException {
@@ -559,7 +643,7 @@ public class AnalyzePeopleCode {
 		}
 		cand_field.addAll(fieldList);
 		SmartAnalyze.log
-				.debug("[Record][" + recname + "][" + fieldname + "] is used in PeopleCode: " + fieldList.size());
+				.debug("________[Record][" + recname + "][" + fieldname + "] is used in PeopleCode: " + fieldList.size());
 	}
 
 	/**
@@ -598,9 +682,9 @@ public class AnalyzePeopleCode {
 			if (id1 == 66)
 				aeList.add(value1);
 		}
-		SmartAnalyze.log.debug("[Record][" + recname + "] is used in Record: " + recList.size() + recList.toString());
-		SmartAnalyze.log.debug("[Record][" + recname + "] is used in AE: " + aeList.size() + aeList.toString());
-		SmartAnalyze.log.debug("[Record][" + recname + "] is used in Component: " + compList.size());
+		SmartAnalyze.log.debug("________[Record][" + recname + "] is used in Record: " + recList.size() + recList.toString());
+		SmartAnalyze.log.debug("________[Record][" + recname + "] is used in AE: " + aeList.size() + aeList.toString());
+		SmartAnalyze.log.debug("________[Record][" + recname + "] is used in Component: " + compList.size());
 		cand_rec.addAll(recList);
 		cand_ae.addAll(aeList);
 		cand_comp.addAll(compList);
@@ -661,39 +745,16 @@ public class AnalyzePeopleCode {
 
 		ResultSet rs = testdb.getQueryResult(sql.toString());
 		while (rs.next()) {
-			compList.add(rs.getString("PNLGRPNAME"));
+			compList.add(rs.getString("PNLGRPNAME").trim());
 		}
 		return compList;
 	}
 
-	/**
-	 * get Components List by Page Name
-	 * 
-	 * @param page
-	 * @param testdb
-	 * @throws SQLException
-	 * @return Comp List
-	 */
-	@SuppressWarnings("unused")
-	List<String> getCompsByPageList(HashSet<String> page, DBUtil testdb) throws SQLException {
-		SmartAnalyze.log.info("<<< Processing Pages List: " + page.size() + " Items <<<");
-		String sql = "";
-		List<String> compList = new ArrayList<String>();
-		// log.debug("Page List:"+ page.toString());
-		if (!page.isEmpty()) {
-			for (String s : page) {
-				sql = "select distinct PNLGRPNAME from PSPNLGROUP where PNLNAME = " + "'" + s + "'";
-				ResultSet rs = testdb.getQueryResult(sql);
-				while (rs.next()) {
-					compList.add(rs.getString("PNLGRPNAME"));
-					// log.debug("Page "+s+" Called by Component:
-					// "+rs.getString("PNLGRPNAME"));
-				}
-			}
-		}
-		HashSet<String> hs = null;
-		hs = new HashSet<String>(compList);
-		return new ArrayList<String>(hs);
-	}
+	void removeDuplicateString(List<String> list) {
 
+		LinkedHashSet<String> set = new LinkedHashSet<String>(list.size());
+		set.addAll(list);
+		list.clear();
+		list.addAll(set);
+	}
 }
