@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -94,6 +93,7 @@ public class AnalyzeALM {
 	 * @param alm_tests
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unused")
 	private List<ALMTest> addGeneralSetup(List<ALMTest> alm_tests) throws Exception {
 		String relativelyPath = System.getProperty("user.dir");
 		List<ALMTest> current = new LinkedList<ALMTest>(alm_tests);
@@ -154,7 +154,7 @@ public class AnalyzeALM {
 					+ ".TEST where ts_test_id in (select ts_test_id from " + project + ".TEST WHERE ");
 			while (it.hasNext()) {
 				PTFTest test = it.next();
-				String temp1 = "(ts_user_37='" + test.getTest_Name() + "' AND ts_user_39='" + test.getTest_Case()
+				String temp1 = "(ts_status='Ready' AND ts_user_08='Complete' AND ts_user_37='" + test.getTest_Name() + "' AND ts_user_39='" + test.getTest_Case()
 						+ "')";
 				col.append(temp1);
 				if (it.hasNext())

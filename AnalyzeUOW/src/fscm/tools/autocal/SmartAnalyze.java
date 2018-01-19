@@ -33,14 +33,9 @@ public class SmartAnalyze {
 	static Logger log = LogManager.getLogger(SmartAnalyze.class);
 
 
-	public static void main(String[] args) {
-		
-		
-		
-		args[0]="91370";
-	//	 args[3]="Purchasing";
-		
-
+	public static void main(String[] args) {		
+		//args[0]="49155";
+		//args[3]="ALL";
 		String product=null;
 		
 		if(args.length>3) {
@@ -90,7 +85,7 @@ public class SmartAnalyze {
 		log.info("<<< Step 1. Compute Dependency on " + args[1] + " >>>");
 		if (pc.computeDependency(mol)) {			
 			log.info("<<< Step 2. Matching PTF Test according to Dependency >>>");
-			if (ptf.computePTFTest(uow.getBugNo())) {
+			if (ptf.computePTFTest(uow.getBugNo(), product)) {
 				log.info("<<< Step 3. Filter Product Test>>>");
 				testlist=alm.filterTestFromALM(product);
 				if (testlist != null && testlist.size() > 0) {					

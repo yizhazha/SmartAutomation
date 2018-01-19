@@ -2,12 +2,12 @@
 <configuration status="WARN" monitorInterval="30">
 	<appenders>
 		<console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="[%d{HH:mm:ss}] [%-5p] - %c{1}:%L - %m%n" />
+			<PatternLayout pattern="[%d{HH:mm:ss}] [%-5p] - %C{1} - %m%n" />
 			<ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
 		</console>
 		<RollingFile name="RollingFile" fileName="logs/info.log"
 			filePattern="logs/old-%d{yyyy-MM-dd}-%i.log">
-			<PatternLayout pattern="[%d{HH:mm:ss}] [%-5p] - %m%n" />
+			<PatternLayout pattern="[%d{HH:mm:ss}] [%-5p] -%C{1} - %m%n" />
 			<ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
 			<Policies>
 				<TimeBasedTriggeringPolicy />
@@ -15,12 +15,12 @@
 			</Policies>
 		</RollingFile>
 		<File name="File" fileName="logs/debug.log" append="false">
-			<PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%-5p] -%c{1}:%l - %m%n" />
+			<PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%-5p] -%C{1}:%L - %m%n" />
         </File>
 	</appenders>
 
 	<loggers>
-		<logger name="fscm.tools.autocal" level="trace" additivity="true">
+		<logger name="fscm.tools.autocal" level="debug" additivity="true">
 			<appender-ref ref="File" />
 		</logger>
 		<root level="info">
@@ -28,5 +28,4 @@
 		<appender-ref ref="Console" />			
 		</root>
 	</loggers>
-
 </configuration>
