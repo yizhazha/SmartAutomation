@@ -221,7 +221,7 @@ def findAllTestCase(caseDict):
     testCaseList = []
     for key in caseDict:
         if "Exec" in key:
-            if "_TEST_" in caseDict[key]["Name"] or "GL_" in caseDict[key]["Name"]:
+            if "_TEST_" in caseDict[key]["Name"] or "GL_" in caseDict[key]["Name"] or "IN_" in caseDict[key]["Name"]:
                 # this is test case
                 case = TestCase(caseDict[key]["Name"], caseDict[key]["Status"], int(key[4:]))
                 for item in caseDict[key].keys():
@@ -256,7 +256,7 @@ def mapStepToTestCase(testCaseList, steps):
 def caseParser(file):
     # convert xml to json
     jObj = convertXMLToJson(file)
-    print(jObj)
+    #print(jObj)
     param = Param(jObj)
     loginfo = LogExport(jObj["execution"]["LogExport"])
     testsuite = TestSuite(jObj["execution"]["Started"], param, loginfo, jObj["execution"]["Status"], file)
@@ -431,10 +431,11 @@ if __name__ == "__main__":
     source_dir = parser.values.FolderPath
 
     json_filename = FindJSON.get_JSONFile(UOW_id, DB_info, email_info, source_dir)
+    print "The log folder name is:"+json_filename
     log_folder = source_dir + os.sep + json_filename
-
+    print "The directory of log folder is:"+log_folder
     file_name = UOW_id+"_"+DB_info+"_"+email_info+".xml"
-
+    print "The merged log file name is:"+file_name
     #init g_para
     g_para = GlobalParameters(log_folder, file_name)
 
@@ -444,10 +445,12 @@ if __name__ == "__main__":
 
     # create report folder
     if not os.path.exists(g_para.report_folder):
+        print "Create report folder..."
         os.mkdir(g_para.report_folder)
 
     # delete report.html if it exists
     if os.path.exists(g_para.output):
+        print "Remove existed report folder..."
         os.remove(g_para.output)
 
     testResult = TestResult()
@@ -463,6 +466,9 @@ if __name__ == "__main__":
             testResult.addTestSuite(testsuite)
 '''
 
+    print "Start to paser the xml log..."
     testsuite = caseParser(g_para.log_dir)
     testResult.addTestSuite(testsuite)
+    print "Start to Generate HTML report..."
     generateHTMLReport(testResult, g_para)
+    print "Completed to create result.html."
