@@ -41,14 +41,14 @@ def get_JSONFile(uow, exo, email, filePath):
             result.append(filelist[size])
         else:
             continue
-    print "#################################################"
+    print "###########################################################"
     print str(len(result)) + " JSON files found with the same perfix."
 
     if(len(result)==1):
         fileName = result[0]
     elif(len(result)==0):
         print "There is no JSON file found by current criteria."
-        print "#################################################"
+        print "###########################################################"
     elif(len(result)>1):
         length = len(result)
         while length>0:
@@ -64,7 +64,7 @@ def get_JSONFile(uow, exo, email, filePath):
                 fileName = result[length]
             #print fileName
     print "JSON file found: " + fileName
-    print "#################################################"
+    print "###########################################################"
     return fileName
 
 ##uow = sys.argv[1]
@@ -86,12 +86,12 @@ def run_ptf_tests(DB_name, server_port, exo, log_dir):
             execute_str = test_framework + " -CS=" + server_port + " -CO=VP1 -CP=VP1 -TST=" + test["test_Name"] + " -CUA=TRUE -TC=" + test["test_Case"] + " -EXO=" + exo + " -LOG=" + log_dir + "\\"  + json_name[:-5] + "\\" + test["test_Name"] + ".xml"
             plan_list.append(test["test_Name"])
             ret = subprocess.call(execute_str, shell=True)
-            print "#################################################"
+            print "## PTF exectuion status - Start ###############################################"
             if ret != 0:
                 print("Exec %s with error return: %s" % (execute_str, str(ret)) )
             else:
                 print("%s executed successfully." % (execute_str))
-            print "#################################################"
+            print "## PTF exectuion status - End #################################################"
 
     exec_lists = os.listdir(log_dir + os.sep + json_name[:-5])
     for logxml in exec_lists:
@@ -100,10 +100,11 @@ def run_ptf_tests(DB_name, server_port, exo, log_dir):
         exec_list.append(log[0])
     diff_num = len(plan_list) - len(exec_list)  # Number of no run tests
     diff_list = list(set(plan_list).difference(set(exec_list))) # List of no run tests' name
-    print "#################################################"
-    print "Number of NO RUN tests: " + diff_num
-    print "List of no run tests' name: " + diff_list
-    print "#################################################"
+    print "## PTF NO RUN tests status - Start #################################"
+    print "Number of NO RUN tests: " + str(diff_num)
+    print "The following list shows the names of NO RUN tests:"
+    print diff_list
+    print "## PTF NO RUN tests status - End ###################################"
     return (diff_num, diff_list)
 
 # Get tests' name that need to backup
