@@ -27,6 +27,8 @@ router.get('/', function(req, res) {
     console.log(newURL);
     var DBName = URL.pathname.slice(URL.pathname.indexOf('/psp/')+5,-2).toUpperCase();
     console.log(DBName);
+    var serverport = URL.host.replace(8000,8001);
+    console.log(serverport);
 
     //var URLcode = encodeURIComponent(URL);
     //console.log(URLcode);
@@ -34,7 +36,7 @@ router.get('/', function(req, res) {
     var jenkins = jenkinsapi.init("http://den00qhy.us.oracle.com:8090");
     //var jenkins = jenkinsapi.init("http://localhost:8080");
 
-   jenkins.build_with_params('Init_Job_Params', {Product: Product, UOW: UOW, URL: newURL, DBName: DBName, Server_Port: URL.host, Email: Email }, function(err, data) {
+   jenkins.build_with_params('Init_Job_Params', {Product: Product, UOW: UOW, URL: newURL, DBName: DBName, Server_Port: serverport, Email: Email }, function(err, data) {
         if (err){ return console.log(err); }
         console.log(data)
     });
