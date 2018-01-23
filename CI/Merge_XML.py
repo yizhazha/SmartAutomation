@@ -101,7 +101,7 @@ def insertDummyXML(targetNode,singleInfo,execSeq,flag):
 
 #if __name__ == "__main__":
 
-#Start below:
+#-------------------------Start below:--------------------------
 ##script, uow, exo, DB_name, email, log_dir, filePath = sys.argv
 
 uow = sys.argv[1]
@@ -118,6 +118,7 @@ LOGDIR = log_dir + os.sep + json_name[:-5]
 SOURCE_XML = LOGDIR + "/*.xml"
 DUMMY_SHELL = uow + "_" + DB_name + "_" + email
 DUMMY_XML = DUMMY_SHELL + ".xml"
+LOGPATH = "\\\slcnas463.us.oracle.com\enterprise\QEShare\PTF_Log" + os.sep + json_name[:-5]
 
 root = createHeader(getStartedTime(SOURCE_XML))
 filesList = fnmatch.filter(os.listdir(LOGDIR), '*.xml')
@@ -134,7 +135,7 @@ for index in range(len(filesList)):
         flag = "p"
     insertDummyXML(TestNode,singleInfo,index +1, flag)
 
-createFooter(root, LOGDIR)
+createFooter(root, LOGPATH)
 indent(root)
 tree = ET.ElementTree(root)
 tree.write(LOGDIR + os.sep + DUMMY_XML)
