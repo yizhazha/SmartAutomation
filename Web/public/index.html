@@ -11,65 +11,29 @@
 <div id="app">
     <div id="loginView">
         <div id="loginTitle">
-            Automation Execution
+            我爱淘宝优惠券
         </div>
         <table class="loginTable">
             <form action="/process" id="autoform" method="GET">
                 <tr>
                     <td>
-                        <label>Product</label>
+                        <label>类别</label>
                     </td>
                     <td>
                         <select name="Product" form="autoform">
-                            <option value="ALL">All Products</option>
-                            <option value="Expenses">Expenses</option>
-                            <option value="Inventory">Inventory</option>
-                            <option value="Mobile Inventory">Mobile Inventory</option>
-                            <option value="Order Management">Order Management</option>
-                            <option value="Cost Management">Cost Management</option>
-                            <option value="Manufacturing">Manufacturing</option>
-                            <option value="Supplier ScoreCarding">Supplier ScoreCarding</option>
-                            <option value="Billing">Billing</option>
-                            <option value="eBill Payment">eBill Payment</option>
-                            <option value="Purchasing">Purchasing</option>
-                            <option value="Accounts Receivable">Accounts Receivable</option>
-                            <option value="General Ledger">General Ledger</option>
+                            <option value="ALL">精品</option>
+                            <option value="Expenses">男装</option>
                         </select>
                     </td>
                 </tr>
 
                 <tr>
                     <td>
-                        <label for="">UOW</label>
+                        <label for="">价格</label>
                     </td>
                     <td>
-                        <input type="text" name="UOW" placeholder="Please Enter UOW" autofocus autocomplete="on" required ="required">
+                        <input type="text" name="UOW" autofocus autocomplete="on" required ="required">
                     </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <label for="">DB URL</label>
-                    </td>
-                    <td>
-                        <input type="text" name="Database" placeholder="Please Enter DB URL" required ="required">
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <label for="">Email</label>
-                    </td>
-                    <td>
-                        <input type="text" name="Email" placeholder="Please Enter Your Email" required ="required">
-                    </td>
-                </tr>
-
-                <tr>
-                    <td colspan="2" class="runTD">
-                        <input type="submit" value="Run" style="width:90px;height:40px;font-size:20px">
-                    </td>
-                </tr>
 
             </form>
 
